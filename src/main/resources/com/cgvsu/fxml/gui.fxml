@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.input.KeyCodeCombination?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="anchorPane" stylesheets="@menuStyleDark.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
+      <StackPane style="-fx-background-color: #1a1919;">
+      <children>
+              <Canvas fx:id="canvas" height="870" width="1600" />
+          <BorderPane prefHeight="870.0" prefWidth="1600.0">
+            <right>
+               <ScrollPane hbarPolicy="NEVER" style="-fx-background-color: #1d1d1d;" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
+                  <content>
+                        <VBox prefHeight="2000.0" prefWidth="373.0" style="-fx-background-color: #1f1f1f;">
+                            <children>
+                                <TitledPane animated="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Models" textFill="#46463c">
+                                    <content>
+                                        <AnchorPane minHeight="-Infinity" minWidth="0.0" prefHeight="120.0" prefWidth="200.0">
+                                            <children>
+                                                <ScrollPane hbarPolicy="NEVER" layoutX="-14.0" layoutY="-12.0" prefHeight="149.0" prefWidth="374.0" style="-fx-background-color: #1f1f1f;">
+                                                    <stylesheets>
+                                                        <URL value="@modelBox.css" />
+                                                        <URL value="@scrollpane.css" />
+                                                    </stylesheets>
+                                                    <content>
+                                                        <VBox prefHeight="143.0" prefWidth="370.0">
+                                                            <children>
+                                                                <Button alignment="TOP_LEFT" mnemonicParsing="false" onAction="#onAddModelClick" prefHeight="41.0" prefWidth="372.0" style="-fx-background-color: #1f1f1f; -fx-border-width: 0;" text="Add model" textFill="#46463c" underline="true">
+                                                                    <font>
+                                                                        <Font size="18.0" />
+                                                                    </font>
+                                                                </Button>
+                                                                <VBox fx:id="modelListVBox" nodeOrientation="LEFT_TO_RIGHT" prefHeight="159.0" prefWidth="370.0" style="-fx-background-color: #1f1f1f; -fx-padding: 10; -fx-spacing: 10;">
+                                                                    <stylesheets>
+                                                                        <URL value="@scrollpane.css" />
+                                                                        <URL value="@modelBox.css" />
+                                                                    </stylesheets>
+                                                                </VBox>
+                                                            </children>
+                                                        </VBox>
+                                                    </content>
+                                                </ScrollPane>
+                                            </children>
+                                        </AnchorPane>
+                                    </content>
+                                    <font>
+                                        <Font size="19.0" />
+                                    </font>
+                                </TitledPane>
+                           <TitledPane animated="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Cameras" textFill="#46463c">
+                              <content>
+                                 <AnchorPane minHeight="-Infinity" minWidth="0.0" prefHeight="270.0" prefWidth="347.0">
+                                    <children>
+                                       <VBox layoutX="-12.0" layoutY="-18.0" prefHeight="305.0" prefWidth="375.0">
+                                          <children>
+                                             <Button alignment="TOP_LEFT" mnemonicParsing="false" onAction="#onAddCameraClick" prefHeight="42.0" prefWidth="383.0" style="-fx-background-color: #1f1f1f; -fx-border-width: 0;" text="Add camera" textFill="#46463c" underline="true">
+                                                <font>
+                                                   <Font size="18.0" />
+                                                </font>
+                                             </Button>
+                                             <VBox fx:id="cameraCoordinatesVBox11" prefHeight="266.0" prefWidth="375.0" style="-fx-background-color: #1f1f1f; -fx-padding: 10; -fx-spacing: 10;">
+                                                <children>
+                                                   <HBox prefWidth="367.0" spacing="10" style="-fx-background-color: #1f1f1f;">
+                                                      <children>
+                                                         <TextField promptText="X" style="-fx-background-color: #2f2f2f; -fx-text-fill: #46463c;" fx:id="xCoordTextField" />
+                                                         <TextField fx:id="yCoordTextField" promptText="Y" style="-fx-background-color: #2f2f2f; -fx-text-fill: #46463c;" />
+                                                         <TextField fx:id="zCoordTextField" promptText="Z" style="-fx-background-color: #2f2f2f; -fx-text-fill: #46463c;" />
+                                                      </children>
+                                                   </HBox>
+                                                   <HBox fx:id="hboxFOV" prefWidth="352.0" visible="false">
+                                                      <children>
+                                                         <Text fill="#46463c" strokeType="OUTSIDE" strokeWidth="0.0" text="Field Of View" textAlignment="CENTER" wrappingWidth="136.87109375">
+                                                            <font>
+                                                               <Font size="20.0" />
+                                                            </font>
+                                                            <HBox.margin>
+                                                               <Insets left="5.0" />
+                                                            </HBox.margin>
+                                                         </Text>
+                                                          <Slider fx:id="sliderFOV" max="180" min="1" prefHeight="27.0" prefWidth="315.0" value="45">
+                                                            <HBox.margin>
+                                                               <Insets />
+                                                            </HBox.margin>
+                                                            <padding>
+                                                               <Insets top="4.0" />
+                                                            </padding>
+                                                         </Slider>
+                                                      </children>
+                                                   </HBox>
+                                                   <HBox fx:id="hboxAR" prefWidth="352.0" visible="false">
+                                                      <children>
+                                                         <Text fill="#46463c" strokeType="OUTSIDE" strokeWidth="0.0" text="Aspect Ratio" textAlignment="CENTER" wrappingWidth="134.87109375">
+                                                            <font>
+                                                               <Font size="20.0" />
+                                                            </font>
+                                                            <HBox.margin>
+                                                               <Insets left="5.0" />
+                                                            </HBox.margin>
+                                                         </Text>
+                                                          <Slider fx:id="sliderAR" max="3.0" min="0.1" prefHeight="23.0" prefWidth="320.0" value="1.77" />
+                                                      </children>
+                                                   </HBox>
+                                                   <ScrollPane hbarPolicy="NEVER" prefHeight="133.0" prefWidth="355.0" style="-fx-background-color: #1f1f1f;">
+                                                      <stylesheets>
+                                                         <URL value="@modelBox.css" />
+                                                         <URL value="@scrollpane.css" />
+                                                      </stylesheets>
+                                                      <content>
+                                                         <VBox fx:id="camerasVBox" nodeOrientation="LEFT_TO_RIGHT" prefHeight="128.0" prefWidth="336.0" style="-fx-background-color: #1f1f1f; -fx-padding: 10; -fx-spacing: 10;">
+                                                            <stylesheets>
+                                                               <URL value="@scrollpane.css" />
+                                                               <URL value="@modelBox.css" />
+                                                            </stylesheets>
+                                                         </VBox>
+                                                      </content>
+                                                   </ScrollPane>
+                                                </children>
+                                             </VBox>
+                                          </children>
+                                       </VBox>
+                                    </children>
+                                 </AnchorPane>
+                              </content>
+                              <font>
+                                 <Font size="19.0" />
+                              </font>
+                           </TitledPane>
+                           <TitledPane animated="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Texture Manager" textFill="#46463c">
+                              <content>
+                                 <AnchorPane minHeight="-Infinity" minWidth="0.0" prefHeight="120.0" prefWidth="347.0">
+                                    <children>
+                                       <ScrollPane hbarPolicy="NEVER" layoutX="-14.0" layoutY="-17.0" prefHeight="156.0" prefWidth="374.0" style="-fx-background-color: #1f1f1f;">
+                                          <stylesheets>
+                                             <URL value="@modelBox.css" />
+                                             <URL value="@scrollpane.css" />
+                                          </stylesheets>
+                                          <content>
+                                             <VBox prefHeight="147.0" prefWidth="370.0">
+                                                <children>
+                                                   <Button alignment="TOP_LEFT" mnemonicParsing="false" onAction="#onAddTextureClick" prefHeight="41.0" prefWidth="372.0" style="-fx-background-color: #1f1f1f; -fx-border-width: 0;" text="Add texture" textFill="#46463c" underline="true">
+                                                      <font>
+                                                         <Font size="18.0" />
+                                                      </font>
+                                                   </Button>
+                                                   <VBox fx:id="textureListVBox" nodeOrientation="LEFT_TO_RIGHT" prefHeight="258.0" prefWidth="370.0" style="-fx-background-color: #1f1f1f; -fx-padding: 10; -fx-spacing: 10;">
+                                                      <stylesheets>
+                                                         <URL value="@scrollpane.css" />
+                                                         <URL value="@modelBox.css" />
+                                                      </stylesheets>
+                                                   </VBox>
+                                                </children>
+                                             </VBox>
+                                          </content>
+                                       </ScrollPane>
+                                    </children>
+                                 </AnchorPane>
+                              </content>
+                              <font>
+                                 <Font size="19.0" />
+                              </font>
+                           </TitledPane>
+                           <TitledPane animated="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Lightning" textFill="#46463c">
+                              <content>
+                                 <AnchorPane minHeight="-Infinity" minWidth="0.0" prefHeight="170.0" prefWidth="347.0">
+                                    <children>
+                                       <ScrollPane hbarPolicy="NEVER" layoutX="-14.0" layoutY="-12.0" prefHeight="196.0" prefWidth="374.0" style="-fx-background-color: #1f1f1f;">
+                                          <stylesheets>
+                                             <URL value="@modelBox.css" />
+                                             <URL value="@scrollpane.css" />
+                                          </stylesheets>
+                                          <content>
+                                             <VBox prefHeight="191.0" prefWidth="370.0">
+                                                <children>
+                                                   <Button alignment="TOP_LEFT" mnemonicParsing="false" onAction="#onAddLightSourceClick" prefHeight="41.0" prefWidth="372.0" style="-fx-background-color: #1f1f1f; -fx-border-width: 0;" text="Add lighting source" textFill="#46463c" underline="true">
+                                                      <font>
+                                                         <Font size="18.0" />
+                                                      </font>
+                                                   </Button>
+                                                   <VBox fx:id="lightSourcesVBox" nodeOrientation="LEFT_TO_RIGHT" prefHeight="195.0" prefWidth="370.0" style="-fx-background-color: #1f1f1f; -fx-padding: 10; -fx-spacing: 10;">
+                                                      <stylesheets>
+                                                         <URL value="@scrollpane.css" />
+                                                         <URL value="@modelBox.css" />
+                                                      </stylesheets>
+                                                   </VBox>
+                                                </children>
+                                             </VBox>
+                                          </content>
+                                       </ScrollPane>
+                                    </children>
+                                 </AnchorPane>
+                              </content>
+                              <font>
+                                 <Font size="19.0" />
+                              </font>
+                           </TitledPane>
+                            </children>
+                        </VBox>
+                  </content>
+               </ScrollPane>
+            </right>
+            <top>
+               <Pane fx:id="topMenuPane" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="35.0" prefWidth="1304.0" style="-fx-background-color: #1D1D1D;" BorderPane.alignment="CENTER">
+                  <children>
+                          <MenuBar fx:id="topMenuBar" prefHeight="35.0" prefWidth="1600.0" style="-fx-background-color: #1D1D1D;" stylesheets="@menuStyleDark.css">
+                              <Menu mnemonicParsing="false" text="File">
+                                  <MenuItem mnemonicParsing="false" onAction="#onAddModelClick" text="Load Model">
+                                      <accelerator>
+                                          <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                      </accelerator>
+                                  </MenuItem>
+                           <MenuItem mnemonicParsing="false" onAction="#onSaveModelMenuItemClick" text="Save Model">
+                              <accelerator>
+                                 <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                              </accelerator>
+                           </MenuItem>
+                           <MenuItem mnemonicParsing="false" onAction="#onAddTextureClick" text="Load Texture">
+                              <accelerator>
+                                 <KeyCodeCombination alt="UP" code="T" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                              </accelerator>
+                           </MenuItem>
+                              </Menu>
+                        <Menu mnemonicParsing="false" text="Theme">
+                          <items>
+                            <MenuItem mnemonicParsing="false" onAction="#switchToLightTheme" text="Light" />
+                              <MenuItem mnemonicParsing="false" onAction="#switchToDarkTheme" text="Dark" />
+                          </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Rendering mode">
+                          <items>
+                              <CheckMenuItem fx:id="menuPolygonMesh" mnemonicParsing="false" text="Draw polygonal mesh" />
+                              <CheckMenuItem fx:id="menuUseTexture" mnemonicParsing="false" text="Use texture" />
+                              <CheckMenuItem fx:id="menuUseLighting" mnemonicParsing="false" text="Use lighting" />
+                          </items>
+                        </Menu>
+                              <Menu mnemonicParsing="false" text="Moving" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+                                  <items>
+                                      <MenuItem mnemonicParsing="false" onAction="#handleCameraForward" text="Forward">
+                                          <accelerator>
+                                              <KeyCodeCombination alt="UP" code="X" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                                          </accelerator>
+                                      </MenuItem>
+                                      <MenuItem mnemonicParsing="false" onAction="#handleCameraBackward" text="Backward">
+                                          <accelerator>
+                                              <KeyCodeCombination alt="UP" code="Z" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                                          </accelerator>
+                                      </MenuItem>
+                                      <MenuItem mnemonicParsing="false" onAction="#handleCameraLeft" text="Left">
+                                          <accelerator>
+                                              <KeyCodeCombination alt="UP" code="A" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                                          </accelerator>
+                                      </MenuItem>
+                                      <MenuItem mnemonicParsing="false" onAction="#handleCameraRight" text="Right">
+                                          <accelerator>
+                                              <KeyCodeCombination alt="UP" code="D" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                                          </accelerator>
+                                      </MenuItem>
+                                      <MenuItem mnemonicParsing="false" onAction="#handleCameraUp" text="Up">
+                                          <accelerator>
+                                              <KeyCodeCombination alt="UP" code="W" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                                          </accelerator>
+                                      </MenuItem>
+                                      <MenuItem mnemonicParsing="false" onAction="#handleCameraDown" text="Down">
+                                          <accelerator>
+                                              <KeyCodeCombination alt="UP" code="S" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                                          </accelerator>
+                                      </MenuItem>
+                                  </items>
+                              </Menu>
+                          </MenuBar>
+                  </children>
+               </Pane>
+            </top>
+            <center>
+               <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                  <bottom>
+                     <Pane prefHeight="42.0" prefWidth="1227.0" style="-fx-background-color: #1f1f1f; -fx-border-color: #1D1D1D;" BorderPane.alignment="CENTER">
+                        <opaqueInsets>
+                           <Insets right="100.0" />
+                        </opaqueInsets>
+                        <children>
+                           <HBox layoutX="14.0" layoutY="3.0" prefHeight="34.0" prefWidth="608.0" stylesheets="@buttonDark.css">
+                              <children>
+                                 <ToggleButton fx:id="togglePolygonMesh" mnemonicParsing="false" stylesheets="@buttonDark.css" text="Draw polygonal mesh">
+                                    <HBox.margin>
+                                       <Insets right="10.0" />
+                                    </HBox.margin>
+                                 </ToggleButton>
+                                 <ToggleButton fx:id="toggleUseTexture" mnemonicParsing="false" text="Use texture">
+                                    <HBox.margin>
+                                       <Insets right="10.0" />
+                                    </HBox.margin>
+                                 </ToggleButton>
+                                 <ToggleButton fx:id="toggleUseLighting" mnemonicParsing="false" text="Use lighting" />
+                              </children>
+                           </HBox>
+                        </children>
+                     </Pane>
+                  </bottom>
+               </BorderPane>
+            </center>
+          </BorderPane>
+      </children>
+      </StackPane>
+    <VBox fx:id="sidePanel" layoutX="-185.0" layoutY="74.0" prefHeight="740.0" prefWidth="198.0" style="-fx-background-color: #1f1f1f;">
+      <children>
+         <VBox prefHeight="214.0" prefWidth="198.0" stylesheets="@textureDark.css">
+            <children>
+               <RadioButton fx:id="textureRadioButton" mnemonicParsing="false" text="Using Texture">
+                  <VBox.margin>
+                     <Insets bottom="5.0" left="5.0" top="5.0" />
+                  </VBox.margin>
+                  <font>
+                     <Font name="System Bold" size="16.0" />
+                  </font>
+               </RadioButton>
+               <RadioButton fx:id="colorRadioButton" mnemonicParsing="false" text="Using color">
+                  <VBox.margin>
+                     <Insets bottom="5.0" left="5.0" top="5.0" />
+                  </VBox.margin>
+                  <font>
+                     <Font name="System Bold" size="16.0" />
+                  </font>
+               </RadioButton>
+               <ColorPicker fx:id="colorPicker" prefHeight="26.0" prefWidth="188.0">
+                  <VBox.margin>
+                     <Insets bottom="5.0" left="5.0" top="5.0" />
+                  </VBox.margin>
+               </ColorPicker>
+               <ComboBox fx:id="textureComboBox" prefHeight="30.0" prefWidth="187.0">
+                  <VBox.margin>
+                     <Insets bottom="5.0" left="5.0" top="5.0" />
+                  </VBox.margin>
+               </ComboBox>
+               <Button alignment="TOP_LEFT" mnemonicParsing="false" onAction="#applyTextureOrColor" prefHeight="0.0" prefWidth="154.0" style="-fx-background-color: #1f1f1f; -fx-border-width: 0;" text="Apply" textFill="#46463c" underline="true">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+                  <padding>
+                     <Insets left="5.0" right="20.0" />
+                  </padding>
+                  <VBox.margin>
+                     <Insets left="5.0" />
+                  </VBox.margin>
+               </Button>
+            </children>
+         </VBox>
+         <VBox fx:id="cameraCoordinatesVBox111" prefHeight="174.0" prefWidth="434.0" style="-fx-background-color: #1f1f1f; -fx-padding: 10; -fx-spacing: 10;">
+            <children>
+               <Text fill="#46463c" strokeType="OUTSIDE" strokeWidth="0.0" text="Scale" wrappingWidth="115.87109375">
+                  <font>
+                     <Font size="20.0" />
+                  </font>
+               </Text>
+               <HBox prefWidth="367.0" spacing="10" style="-fx-background-color: #1f1f1f;">
+                  <children>
+                     <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="X" wrappingWidth="8.078125">
+                        <HBox.margin>
+                           <Insets top="2.0" />
+                        </HBox.margin>
+                     </Text>
+                     <TextField prefHeight="25.0" prefWidth="159.0" promptText="X" style="-fx-background-color: #2f2f2f; -fx-text-fill: #46463c;" text="1.000" fx:id="xScaleCoords" />
+                  </children>
+               </HBox>
+               <HBox prefWidth="367.0" spacing="10" style="-fx-background-color: #1f1f1f;">
+                  <children>
+                     <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Y" wrappingWidth="8.078125">
+                        <HBox.margin>
+                           <Insets top="2.0" />
+                        </HBox.margin>
+                     </Text>
+                     <TextField fx:id="yScaleCoords" prefHeight="25.0" prefWidth="159.0" promptText="Y" style="-fx-background-color: #2f2f2f; -fx-text-fill: #46463c;" text="1.000" />
+                  </children>
+               </HBox>
+               <HBox prefWidth="367.0" spacing="10" style="-fx-background-color: #1f1f1f;">
+                  <children>
+                     <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Z" wrappingWidth="8.078125">
+                        <HBox.margin>
+                           <Insets top="2.0" />
+                        </HBox.margin>
+                     </Text>
+                     <TextField fx:id="zScaleCoords" prefHeight="25.0" prefWidth="169.0" promptText="Z" style="-fx-background-color: #2f2f2f; -fx-text-fill: #46463c;" text="1.000" />
+                  </children>
+               </HBox>
+            </children>
+         </VBox>
+         <Button alignment="TOP_LEFT" mnemonicParsing="false" onAction="#onApplyScaleClick" prefHeight="0.0" prefWidth="154.0" style="-fx-background-color: #1f1f1f; -fx-border-width: 0;" text="Apply scale" textFill="#46463c" underline="true">
+            <font>
+               <Font size="18.0" />
+            </font>
+            <padding>
+               <Insets right="10.0" />
+            </padding>
+            <VBox.margin>
+               <Insets left="10.0" />
+            </VBox.margin>
+         </Button>
+         <VBox fx:id="cameraCoordinatesVBox1111" prefHeight="174.0" prefWidth="434.0" style="-fx-background-color: #1f1f1f; -fx-padding: 10; -fx-spacing: 10;">
+            <children>
+               <Text fill="#46463c" strokeType="OUTSIDE" strokeWidth="0.0" text="Rotate" wrappingWidth="115.87109375">
+                  <font>
+                     <Font size="20.0" />
+                  </font>
+               </Text>
+               <HBox prefWidth="367.0" spacing="10" style="-fx-background-color: #1f1f1f;">
+                  <children>
+                     <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="X" wrappingWidth="8.078125">
+                        <HBox.margin>
+                           <Insets top="3.0" />
+                        </HBox.margin>
+                     </Text>
+                     <TextField prefHeight="25.0" prefWidth="179.0" promptText="X" style="-fx-background-color: #2f2f2f; -fx-text-fill: #46463c;" text="0°" fx:id="xRotateCoords" />
+                  </children>
+               </HBox>
+               <HBox prefWidth="367.0" spacing="10" style="-fx-background-color: #1f1f1f;">
+                  <children>
+                     <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Y" wrappingWidth="8.078125">
+                        <HBox.margin>
+                           <Insets top="3.0" />
+                        </HBox.margin>
+                     </Text>
+                     <TextField fx:id="yRotateCoords" prefHeight="25.0" prefWidth="180.0" promptText="Y" style="-fx-background-color: #2f2f2f; -fx-text-fill: #46463c;" text="0°" />
+                  </children>
+               </HBox>
+               <HBox prefWidth="367.0" spacing="10" style="-fx-background-color: #1f1f1f;">
+                  <children>
+                     <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Z" wrappingWidth="8.078125">
+                        <HBox.margin>
+                           <Insets top="3.0" />
+                        </HBox.margin>
+                     </Text>
+                     <TextField fx:id="zRotateCoords" prefHeight="25.0" prefWidth="194.0" promptText="Z" style="-fx-background-color: #2f2f2f; -fx-text-fill: #46463c;" text="0°" />
+                  </children>
+               </HBox>
+               <Button alignment="TOP_LEFT" mnemonicParsing="false" onAction="#onApplyRotateClick" prefHeight="23.0" prefWidth="154.0" style="-fx-background-color: #1f1f1f; -fx-border-width: 0;" text="Apply rotate" textFill="#46463c" underline="true">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+                  <padding>
+                     <Insets right="10.0" />
+                  </padding>
+               </Button>
+            </children>
+         </VBox>
+         <VBox fx:id="cameraCoordinatesVBox1112" prefHeight="174.0" prefWidth="434.0" style="-fx-background-color: #1f1f1f; -fx-padding: 10; -fx-spacing: 10;">
+            <children>
+               <Text fill="#46463c" strokeType="OUTSIDE" strokeWidth="0.0" text="Transform" wrappingWidth="115.87109375">
+                  <font>
+                     <Font size="20.0" />
+                  </font>
+               </Text>
+               <HBox prefWidth="367.0" spacing="10" style="-fx-background-color: #1f1f1f;">
+                  <children>
+                     <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="X" wrappingWidth="8.078125">
+                        <HBox.margin>
+                           <Insets top="3.0" />
+                        </HBox.margin>
+                     </Text>
+                     <TextField prefHeight="25.0" prefWidth="177.0" promptText="X" style="-fx-background-color: #2f2f2f; -fx-text-fill: #46463c;" text="1m" fx:id="xTransformCoords" />
+                  </children>
+               </HBox>
+               <HBox prefWidth="367.0" spacing="10" style="-fx-background-color: #1f1f1f;">
+                  <children>
+                     <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Y" wrappingWidth="8.078125">
+                        <HBox.margin>
+                           <Insets top="3.0" />
+                        </HBox.margin>
+                     </Text>
+                     <TextField fx:id="yTransformCoords" prefHeight="25.0" prefWidth="177.0" promptText="Y" style="-fx-background-color: #2f2f2f; -fx-text-fill: #46463c;" text="1m" />
+                  </children>
+               </HBox>
+               <HBox prefWidth="367.0" spacing="10" style="-fx-background-color: #1f1f1f;">
+                  <children>
+                     <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Z" wrappingWidth="8.078125">
+                        <HBox.margin>
+                           <Insets top="4.0" />
+                        </HBox.margin>
+                     </Text>
+                     <TextField fx:id="zTransformCoords" prefHeight="25.0" prefWidth="208.0" promptText="Z" style="-fx-background-color: #2f2f2f; -fx-text-fill: #46463c;" text="1m" />
+                  </children>
+               </HBox>
+               <Button alignment="TOP_LEFT" mnemonicParsing="false" onAction="#onApplyTransformClick" prefHeight="23.0" prefWidth="154.0" style="-fx-background-color: #1f1f1f; -fx-border-width: 0;" text="Apply transform" textFill="#46463c" underline="true">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+                  <VBox.margin>
+                     <Insets />
+                  </VBox.margin>
+                  <padding>
+                     <Insets right="10.0" />
+                  </padding>
+               </Button>
+            </children>
+         </VBox>
+      </children></VBox>
+</AnchorPane>

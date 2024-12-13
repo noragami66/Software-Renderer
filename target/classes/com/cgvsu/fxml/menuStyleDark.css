@@ -1,0 +1,49 @@
+.menu-bar {
+    -fx-background-color: #1D1D1D;
+    -fx-font-size: 16px;
+}
+
+.menu {
+    -fx-background-color: #1D1D1D;
+    -fx-text-fill: #C09D7D;
+}
+
+.menu-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: #C09D7D;
+}
+
+.menu-item:hover {
+    -fx-background-color: #333333;
+}
+
+.context-menu {
+    -fx-background-color: #1D1D1D;
+    -fx-font-size: 16px;
+}
+
+.slider {
+    -fx-background-color: transparent;
+    -fx-control-inner-background: transparent;
+}
+
+.text {
+    -fx-background-color: transparent;
+}
+
+.slider .thumb {
+    -fx-background-color: #46463c;
+}
+
+.slider .track {
+    -fx-background-color: #2f2f2f;
+}
+
+.slider:pressed {
+    -fx-text-fill: #C09D7D;
+}
+
+.slider:focused {
+    -fx-text-fill: #C09D7D;
+}
+

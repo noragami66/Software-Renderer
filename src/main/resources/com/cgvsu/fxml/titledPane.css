@@ -1,0 +1,35 @@
+.titled-pane {
+    -fx-border-color: #1f1f1f;
+    -fx-border-width: 2px;
+    -fx-background-color: #1f1f1f;
+}
+
+.titled-pane .title {
+    -fx-text-fill: #46463c;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0px;
+}
+
+.titled-pane .content {
+    -fx-background-color: #1f1f1f;
+    -fx-padding: 10px;
+}
+
+.titled-pane .collapsed {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.titled-pane .title .arrow {
+    -fx-background-color: #46463c;
+}
+
+.titled-pane .title .arrow:hover {
+    -fx-background-color: #46463c;
+}
+
+.titled-pane:focused {
+    -fx-focus-color: transparent;
+}
+

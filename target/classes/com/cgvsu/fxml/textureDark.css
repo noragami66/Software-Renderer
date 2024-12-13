@@ -1,0 +1,21 @@
+
+.radio-button {
+    -fx-text-fill: #46463c;
+    -fx-background-color: #1D1D1D;
+    -fx-font-size: 14px;
+    -fx-padding: 5px 10px;
+    -fx-alignment: center-left;
+    -fx-focus-color: transparent;
+}
+
+.color-picker {
+    -fx-background-color:  #1D1D1D;
+        -fx-font-size: 12px;
+
+}
+
+.combo-box {
+    -fx-text-fill: #46463c;
+    -fx-background-color:  #1D1D1D;
+    -fx-font-size: 14px;
+}

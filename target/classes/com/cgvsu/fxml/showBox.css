@@ -1,0 +1,38 @@
+.error-window {
+    -fx-background-color:  #1f1f1f;
+    -fx-border-color: #1f1f1f;
+}
+
+.error-textarea {
+    -fx-background-color: #1f1f1f;
+    -fx-text-fill: #46463c;
+    -fx-font-size: 14px;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-control-inner-background: #1f1f1f;
+    -fx-border-color: #1f1f1f;
+    -fx-overflow: transparent;
+    -fx-resize: transparent;
+}
+
+.error-text {
+    -fx-fill: #46463c;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.error-textarea:focused {
+    -fx-text-fill: #46463c;
+}
+
+.close-button {
+    -fx-background-color: #1f1f1f;
+    -fx-text-fill: #46463c;
+    -fx-font-size: 16px;
+    -fx-padding: 5px 15px;
+}
+
+.close-button:hover {
+    -fx-background-color: #46463c;
+    -fx-text-fill: #1f1f1f;
+}
