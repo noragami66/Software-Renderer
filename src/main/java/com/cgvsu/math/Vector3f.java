@@ -1,7 +1,7 @@
 package com.cgvsu.math;
 
 // Это заготовка для собственной библиотеки для работы с линейной алгеброй
-public class Vector3f {
+public class Vector3f implements Cloneable  {
     public Vector3f(float x, float y, float z) {
         this.x = x;
         this.y = y;
@@ -14,5 +14,27 @@ public class Vector3f {
         return Math.abs(x - other.x) < eps && Math.abs(y - other.y) < eps && Math.abs(z - other.z) < eps;
     }
 
-    public float x, y, z;
+    @Override
+    public Vector3f clone()  {
+        try {
+            return (Vector3f) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    float x, y, z;
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public float getZ() {
+        return z;
+    }
 }

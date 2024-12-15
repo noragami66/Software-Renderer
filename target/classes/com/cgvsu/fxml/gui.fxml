@@ -7,6 +7,7 @@
 <?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.ColorPicker?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -36,6 +37,27 @@
                   <content>
                         <VBox prefHeight="2000.0" prefWidth="373.0" style="-fx-background-color: #1f1f1f;">
                             <children>
+                           <TitledPane animated="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Editing" textFill="#46463c">
+                              <content>
+                                 <AnchorPane minHeight="-Infinity" minWidth="0.0" prefHeight="170.0" prefWidth="347.0">
+                                    <children>
+                                       <VBox layoutX="-14.0" layoutY="-10.0" prefHeight="195.0" prefWidth="387.0">
+                                          <children>
+                                             <Button alignment="TOP_LEFT" mnemonicParsing="false" onAction="#handleDeleteVertex" prefHeight="39.0" prefWidth="378.0" style="-fx-background-color: #1f1f1f; -fx-border-width: 0;" text="Удалить" textFill="#46463c" underline="true">
+                                                <font>
+                                                   <Font size="18.0" />
+                                                </font>
+                                             </Button>
+                                             <ListView fx:id="vertexListView" prefHeight="214.0" prefWidth="373.0" stylesheets="@listView.css" />
+                                          </children>
+                                       </VBox>
+                                    </children>
+                                 </AnchorPane>
+                              </content>
+                              <font>
+                                 <Font size="19.0" />
+                              </font>
+                           </TitledPane>
                                 <TitledPane animated="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Models" textFill="#46463c">
                                     <content>
                                         <AnchorPane minHeight="-Infinity" minWidth="0.0" prefHeight="120.0" prefWidth="200.0">
@@ -314,6 +336,11 @@
                                     </HBox.margin>
                                  </ToggleButton>
                                  <ToggleButton fx:id="toggleUseLighting" mnemonicParsing="false" text="Use lighting" />
+                                 <ToggleButton fx:id="toggleVertices" mnemonicParsing="false" stylesheets="@buttonDark.css" text="Vertices">
+                                    <HBox.margin>
+                                       <Insets left="5.0" />
+                                    </HBox.margin>
+                                 </ToggleButton>
                               </children>
                            </HBox>
                         </children>

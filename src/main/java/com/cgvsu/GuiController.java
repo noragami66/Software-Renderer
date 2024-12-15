@@ -12,9 +12,11 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -28,6 +30,8 @@ import java.io.IOException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Point2f;
 import javax.vecmath.Vector3f;
 
 
@@ -37,7 +41,6 @@ import com.cgvsu.render_engine.Camera;
 
 public class GuiController {
     private final List<Model> models = new ArrayList<>();
-    private Model selectedModel = null;
 
     String modelName;
 
@@ -143,12 +146,20 @@ public class GuiController {
 
     private Button previousTextureSelectButton;
 
+    @FXML
+    private ListView<String> vertexListView;
 
     @FXML
     private HBox hboxFOV;
 
     @FXML
     private HBox hboxAR;
+
+    private Model selectedModel;
+
+    private Matrix4f modelViewProjectionMatrix;
+    @FXML
+    private ToggleButton toggleVertices;
 
     @FXML
     private RadioButton textureRadioButton;
@@ -219,6 +230,81 @@ public class GuiController {
 
         textureRadioButton.setOnAction(e -> handleRadioButtonChange(textureRadioButton));
         colorRadioButton.setOnAction(e -> handleRadioButtonChange(colorRadioButton));
+
+        vertexListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> handleVertexSelection());
+
+        toggleVertices.setOnAction(event -> handleToggleVerticesAction());
+    }
+
+    public void handleToggleVerticesAction() {
+        if (selectedModel == null) {
+            showMessage("Модель не выбрана!");
+            toggleVertices.setSelected(false);
+            return;
+        }
+
+        if (selectedCamera == null) {
+            showMessage("Камера не выбрана!");
+            toggleVertices.setSelected(false);
+            return;
+        }
+
+        RenderEngine.toggleVerticesVisibility(selectedModel);
+        renderScene();
+    }
+
+    private void updateButtonState() {
+        if (selectedModel != null) {
+            if (selectedModel.isVerticesVisible()){
+                toggleVertices.setSelected(true);
+            }else {
+                toggleVertices.setSelected(false);
+            }
+        }
+    }
+
+    private void updateVertexList() {
+        vertexListView.getItems().clear();
+
+        if (selectedModel != null) {
+            for (int i = 0; i < selectedModel.vertices.size(); i++) {
+                com.cgvsu.math.Vector3f vertex = selectedModel.vertices.get(i);
+                vertexListView.getItems().add("Vertex " + i + ": (" + vertex.getX() + ", " + vertex.getY() + ", " + vertex.getZ() + ")");
+            }
+        }
+    }
+
+    @FXML
+    private void handleVertexSelection() {
+        int selectedIndex = vertexListView.getSelectionModel().getSelectedIndex();
+
+        if (selectedIndex >= 0 && selectedModel != null) {
+            RenderEngine.setSelectedVertexIndex(selectedIndex);
+            renderScene();
+        }
+    }
+
+    private void renderScene() {
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+        double canvasWidth = canvas.getWidth();
+        double canvasHeight = canvas.getHeight();
+        selectedCamera.setAspectRatio((float) (canvasWidth / canvasHeight));
+
+        for (Model model : models) {
+            RenderEngine.render(gc,selectedCamera, model, (int) canvasWidth, (int) canvasHeight);
+        }
+    }
+
+    @FXML
+    private void handleDeleteVertex() {
+        if (selectedModel != null) {
+            RenderEngine.deleteSelectedVertex(selectedModel);
+            updateVertexList();
+            renderScene();
+        }
     }
 
 
@@ -879,9 +965,12 @@ public class GuiController {
                 selectedModel = null;
                 selectButton.setStyle("");
                 slidePanelOut();
+                RenderEngine.resetSelectedVertex();
+                updateVertexList();
             } else {
                 if (previousModelSelectButton != null) {
                     previousModelSelectButton.setStyle("");
+                    RenderEngine.resetSelectedVertex();
                 }
 
                 if (selectedModel != null) {
@@ -894,8 +983,9 @@ public class GuiController {
 
                 selectButton.setStyle("-fx-background-color: #46463c; -fx-text-fill: #1f1f1f; ");
                 previousModelSelectButton = selectButton;
-
+                updateButtonState();
                 slidePanelIn();
+                updateVertexList();
             }
         });
 
@@ -908,6 +998,8 @@ public class GuiController {
                 slidePanelOut();
             }
             updateSelected(selectedModel, selectedModel != null);
+            vertexListView.getItems().clear();
+            toggleVertices.setSelected(false);
         });
 
         buttonBox.getChildren().addAll(selectButton, deleteButton);

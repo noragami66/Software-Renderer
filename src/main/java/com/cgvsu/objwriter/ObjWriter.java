@@ -15,15 +15,15 @@ public class ObjWriter {
     public static void write(Model model, String filePath) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             for (Vector3f vertex : model.vertices) {
-                writer.write(String.format(Locale.US, "v %f %f %f\n", vertex.x, vertex.y, vertex.z));
+                writer.write(String.format(Locale.US, "v %f %f %f\n", vertex.getX(), vertex.getY(), vertex.getZ()));
             }
 
             for (Vector2f textureVertex : model.textureVertices) {
-                writer.write(String.format(Locale.US, "vt %f %f\n", textureVertex.x, textureVertex.y));
+                writer.write(String.format(Locale.US, "vt %f %f\n", textureVertex.getX(), textureVertex.getY()));
             }
 
             for (Vector3f normal : model.normals) {
-                writer.write(String.format(Locale.US, "vn %f %f %f\n", normal.x, normal.y, normal.z));
+                writer.write(String.format(Locale.US, "vn %f %f %f\n", normal.getX(), normal.getY(), normal.getZ()));
             }
 
             for (Polygon polygon : model.polygons) {
