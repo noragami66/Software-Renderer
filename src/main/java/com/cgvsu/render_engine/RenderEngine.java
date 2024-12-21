@@ -19,7 +19,7 @@ public class RenderEngine {
 
     private static final double POINT_SIZE = 5.0;
 
-    private static int selectedVertexIndex = -1;
+    public static ArrayList<Integer> selectedVertexIndices = new ArrayList<>();
 
     public static void render(
             final GraphicsContext graphicsContext,
@@ -81,15 +81,11 @@ public class RenderEngine {
 
 
     public static void setSelectedVertexIndex(int index) {
-        if (index >= 0) {
-            selectedVertexIndex = index;
-        } else {
-            selectedVertexIndex = -1;
-        }
+        toggleVertexSelection(index);
     }
 
-    public static void resetSelectedVertex() {
-        selectedVertexIndex = -1;
+    public static void resetSelectedVertices() {
+        selectedVertexIndices.clear();
     }
 
     private static void renderVertices(
@@ -103,12 +99,11 @@ public class RenderEngine {
 
         for (int i = 0; i < nVertices; i++) {
             Vector3f vertex = model.vertices.get(i);
-
             javax.vecmath.Vector3f vertexVecmath = new javax.vecmath.Vector3f(vertex.getX(), vertex.getY(), vertex.getZ());
 
             Point2f screenPoint = vertexToPoint(multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertexVecmath), width, height);
 
-            if (i == selectedVertexIndex) {
+            if (selectedVertexIndices.contains(i)) {
                 graphicsContext.setFill(Color.RED);
             } else {
                 graphicsContext.setFill(Color.BLUE);
@@ -118,20 +113,30 @@ public class RenderEngine {
         }
     }
 
-    public static void deleteSelectedVertex(Model model) {
-        if (selectedVertexIndex != -1) {
-            model.vertices.remove(selectedVertexIndex);
+    public static void deleteSelectedVertices(Model model) {
+        if (!selectedVertexIndices.isEmpty()) {
+            for (int i = selectedVertexIndices.size() - 1; i >= 0; i--) {
+                int index = selectedVertexIndices.get(i);
+                model.vertices.remove(index);
 
-            for (Polygon polygon : model.polygons) {
-                polygon.getVertexIndices().removeIf(index -> index == selectedVertexIndex);
-                for (int i = 0; i < polygon.getVertexIndices().size(); i++) {
-                    if (polygon.getVertexIndices().get(i) > selectedVertexIndex) {
-                        polygon.getVertexIndices().set(i, polygon.getVertexIndices().get(i) - 1);
+                for (Polygon polygon : model.polygons) {
+                    polygon.getVertexIndices().removeIf(vertexIndex -> vertexIndex == index);
+                    for (int j = 0; j < polygon.getVertexIndices().size(); j++) {
+                        if (polygon.getVertexIndices().get(j) > index) {
+                            polygon.getVertexIndices().set(j, polygon.getVertexIndices().get(j) - 1);
+                        }
                     }
                 }
             }
+            selectedVertexIndices.clear();
+        }
+    }
 
-            selectedVertexIndex = -1;
+    public static void toggleVertexSelection(int index) {
+        if (selectedVertexIndices.contains(index)) {
+            selectedVertexIndices.remove(Integer.valueOf(index));
+        } else {
+            selectedVertexIndices.add(index);
         }
     }
 }

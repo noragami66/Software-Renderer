@@ -7,11 +7,16 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class Model implements Cloneable {
-    private boolean verticesVisible = false;
     public ArrayList<Vector3f> vertices = new ArrayList<>();
     public ArrayList<Vector2f> textureVertices = new ArrayList<>();
     public ArrayList<Vector3f> normals = new ArrayList<>();
     public ArrayList<Polygon> polygons = new ArrayList<>();
+
+
+    private boolean verticesVisible = false;
+    private boolean polygonMeshEnabled = false;
+    private boolean textureEnabled = false;
+    private boolean lightingEnabled = false;
 
     public Model() {
     }
@@ -113,4 +118,27 @@ public class Model implements Cloneable {
         }
     }
 
+    public boolean isPolygonMeshEnabled() {
+        return polygonMeshEnabled;
+    }
+
+    public void setPolygonMeshEnabled(boolean polygonMeshEnabled) {
+        this.polygonMeshEnabled = polygonMeshEnabled;
+    }
+
+    public boolean isTextureEnabled() {
+        return textureEnabled;
+    }
+
+    public void setTextureEnabled(boolean textureEnabled) {
+        this.textureEnabled = textureEnabled;
+    }
+
+    public boolean isLightingEnabled() {
+        return lightingEnabled;
+    }
+
+    public void setLightingEnabled(boolean lightingEnabled) {
+        this.lightingEnabled = lightingEnabled;
+    }
 }

@@ -4,22 +4,26 @@ import com.cgvsu.objwriter.ObjWriter;
 import com.cgvsu.render_engine.LightSource;
 import com.cgvsu.render_engine.RenderEngine;
 import javafx.animation.TranslateTransition;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.stage.StageStyle;
@@ -30,10 +34,7 @@ import java.io.IOException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Point2f;
 import javax.vecmath.Vector3f;
-
 
 import com.cgvsu.model.Model;
 import com.cgvsu.objreader.ObjReader;
@@ -41,29 +42,27 @@ import com.cgvsu.render_engine.Camera;
 
 public class GuiController {
     private final List<Model> models = new ArrayList<>();
-
-    String modelName;
-
+    private List<Camera> cameras = new ArrayList<>();
     private final List<LightSource> lightSources = new ArrayList<>();
     private LightSource selectedLightSource = null;
     private Button previousLightSourceSelectButton = null;
-
+    private Button previousModelSelectButton = null;
+    private String selectedTexture;
+    private Model selectedModel;
+    private Camera selectedCamera;
     final private float TRANSLATION = 0.5F;
+
+    @FXML
+    private VBox textureListVBox;
 
     @FXML
     private VBox modelListVBox;
 
     @FXML
-    private VBox camerasVBox;
+    private VBox lightSourcesVBox;
 
     @FXML
     private ComboBox<String> textureComboBox;
-
-    @FXML
-    private VBox lightSourcesVBox;
-
-    private List<Camera> cameras = new ArrayList<>();
-    private Camera selectedCamera;
 
     @FXML
     private TextField xCoordTextField;
@@ -93,42 +92,18 @@ public class GuiController {
     @FXML
     private TextField zRotateCoords;
 
-
-    @FXML
-    private Pane topMenuPane;
-
-    @FXML
-    private MenuBar topMenuBar;
-
-    private TitledPane modelsTitledPane;
-
-    private TitledPane camerasTitledPane;
-
     @FXML
     AnchorPane anchorPane;
-
-    private Button previousCameraSelectButton = null;
-    private Button previousModelSelectButton = null;
 
     @FXML
     private Canvas canvas;
 
     @FXML
-    private Canvas mainCanvas;
-
-    @FXML
     private VBox sidePanel;
-
-    @FXML
-    private Slider sliderFOV;
-    @FXML
-    private Slider sliderAR;
 
     @FXML
     private ToggleButton togglePolygonMesh;
 
-    @FXML
-    private ToggleButton toggleUseTexture;
 
     @FXML
     private ToggleButton toggleUseLighting;
@@ -136,42 +111,24 @@ public class GuiController {
     @FXML
     private CheckMenuItem menuPolygonMesh;
 
-    @FXML
-    private CheckMenuItem menuUseTexture;
 
     @FXML
     private CheckMenuItem menuUseLighting;
-
-    private Button previousEditButton = null;
-
-    private Button previousTextureSelectButton;
 
     @FXML
     private ListView<String> vertexListView;
 
     @FXML
-    private HBox hboxFOV;
-
-    @FXML
-    private HBox hboxAR;
-
-    private Model selectedModel;
-
-    private Matrix4f modelViewProjectionMatrix;
-    @FXML
     private ToggleButton toggleVertices;
 
     @FXML
     private RadioButton textureRadioButton;
+
     @FXML
     private RadioButton colorRadioButton;
+
     @FXML
     private ColorPicker colorPicker;
-
-    private String selectedTexture;
-
-    @FXML
-    private VBox textureListVBox;
 
     @FXML
     private MenuItem lightThemeMenuItem;
@@ -179,7 +136,8 @@ public class GuiController {
     @FXML
     private MenuItem darkThemeMenuItem;
 
-    private Model mesh = null;
+
+    private boolean isDarkTheme = true;
 
     private Camera mainCamera = new Camera(
             new Vector3f(0, 00, 200),
@@ -187,6 +145,11 @@ public class GuiController {
             1.0F, 1, 0.01F, 200);
 
     private Timeline timeline;
+
+    //init
+    //INIT
+    //штше
+    //ШТШЕ
 
     @FXML
     private void initialize() {
@@ -201,6 +164,7 @@ public class GuiController {
             double height = canvas.getHeight();
 
             canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
+
             mainCamera.setAspectRatio((float) (width / height));
 
             for (Model model : models) {
@@ -213,29 +177,105 @@ public class GuiController {
         timeline.play();
 
 
+        colorRadioButton.setSelected(true);
+
         bindToggleAndMenuItem(togglePolygonMesh, menuPolygonMesh);
 
-        bindToggleAndMenuItem(toggleUseTexture, menuUseTexture);
-
         bindToggleAndMenuItem(toggleUseLighting, menuUseLighting);
+
 
         togglePolygonMesh.setOnAction(event -> handlePolygonMesh());
         menuPolygonMesh.setOnAction(event -> handlePolygonMeshMenuItem());
 
-        toggleUseTexture.setOnAction(event -> handleUseTexture());
-        menuUseTexture.setOnAction(event -> handleUseTextureMenuItem());
-
         toggleUseLighting.setOnAction(event -> handleUseLighting());
         menuUseLighting.setOnAction(event -> handleUseLightingMenuItem());
 
-        textureRadioButton.setOnAction(e -> handleRadioButtonChange(textureRadioButton));
-        colorRadioButton.setOnAction(e -> handleRadioButtonChange(colorRadioButton));
+        textureRadioButton.setOnAction(e -> {
+            handleRadioButtonChange(textureRadioButton);
+            applyTextureOrColor();
+        });
+        colorRadioButton.setOnAction(e -> {
+            handleRadioButtonChange(colorRadioButton);
+            applyTextureOrColor();
+        });
 
         vertexListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> handleVertexSelection());
 
         toggleVertices.setOnAction(event -> handleToggleVerticesAction());
+
+        cameras = FXCollections.observableArrayList();
+        camerasListView.setItems((ObservableList<Camera>) cameras);
+
+        camerasListView.setCellFactory(e -> {
+            ListCell<Camera> cell = new ListCell<>() {
+                @Override
+                protected void updateItem(Camera camera, boolean empty) {
+                    super.updateItem(camera, empty);
+                    if (empty || camera == null) {
+                        setText(null);
+                        setContextMenu(null);
+                    } else {
+                        setText("Camera (" + camera.getPosition().x + ", " + camera.getPosition().y + ", " + camera.getPosition().z + ")");
+
+                        ContextMenu contextMenu = new ContextMenu();
+
+                        MenuItem editItem = new MenuItem("Edit");
+                        editItem.setOnAction(e -> {
+                            if (selectedCamera != null) {
+                                openEditDialog(camera, isDarkTheme);
+                            } else {
+                                showMessage("Сначала выберите камеру (ЛКМ) перед редактированием.");
+                            }
+                        });
+
+                        MenuItem deleteItem = new MenuItem("Delete");
+                        deleteItem.setOnAction(e -> {
+                            cameras.remove(camera);
+                            if (selectedCamera == camera) {
+                                selectedCamera = null;
+                            }
+                            System.out.println("Удалена камера: " + camera.getPosition());
+                        });
+
+                        if (isDarkTheme) {
+                            contextMenu.setStyle("");
+                            editItem.setStyle("");
+                            deleteItem.setStyle("");
+                            contextMenu.setStyle("");
+                            contextMenu.setStyle("-fx-background-color: #2f2f2f; -fx-text-fill: white; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;");
+
+                            editItem.setStyle("-fx-text-fill: white; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;");
+                            deleteItem.setStyle("-fx-text-fill: white; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;");
+                        }
+                        else {
+                            contextMenu.setStyle("");
+                            editItem.setStyle("");
+                            deleteItem.setStyle("");
+                            contextMenu.setStyle("-fx-background-color: white; -fx-text-fill: black;");
+                            editItem.setStyle("-fx-background-color: #c0c0c0; -fx-text-fill: black;");
+                            deleteItem.setStyle("-fx-background-color: #c0c0c0; -fx-text-fill: black;");
+                        }
+
+                        contextMenu.getItems().addAll(editItem, deleteItem);
+                        setContextMenu(contextMenu);
+                    }
+                }
+            };
+
+            cell.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY && !cell.isEmpty()) {
+                    selectedCamera = cell.getItem();
+                    mainCamera = new Camera(selectedCamera);
+                    updateCameraUI(selectedCamera);
+                    System.out.println("Выбрана камера: " + selectedCamera.getPosition());
+                }
+            });
+
+            return cell;
+        });
     }
 
+    /*   <----------------------------БЛОК С ВЕРШИНАМИ----------------------->   */
     public void handleToggleVerticesAction() {
         if (selectedModel == null) {
             showMessage("Модель не выбрана!");
@@ -260,6 +300,16 @@ public class GuiController {
             }else {
                 toggleVertices.setSelected(false);
             }
+            if (selectedModel.isLightingEnabled()){
+                toggleUseLighting.setSelected(true);
+            }else {
+                toggleUseLighting.setSelected(false);
+            }
+            if (selectedModel.isPolygonMeshEnabled()){
+                togglePolygonMesh.setSelected(true);
+            }else {
+                togglePolygonMesh.setSelected(false);
+            }
         }
     }
 
@@ -272,7 +322,10 @@ public class GuiController {
                 vertexListView.getItems().add("Vertex " + i + ": (" + vertex.getX() + ", " + vertex.getY() + ", " + vertex.getZ() + ")");
             }
         }
+
+        vertexListView.setCellFactory(param -> new VertexListCell());
     }
+
 
     @FXML
     private void handleVertexSelection() {
@@ -285,6 +338,10 @@ public class GuiController {
     }
 
     private void renderScene() {
+        if (selectedCamera == null) {
+            showMessage("В программе могут возникнуть ошибки при рендере, выберите камеру!");
+            return;
+        }
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -299,13 +356,67 @@ public class GuiController {
     }
 
     @FXML
-    private void handleDeleteVertex() {
+    private void handleDeleteVertices() {
+        if (selectedCamera == null) {
+            showMessage("В программе могут возникнуть ошибки при рендере, выберите камеру!");
+            return;
+        }
         if (selectedModel != null) {
-            RenderEngine.deleteSelectedVertex(selectedModel);
+            RenderEngine.deleteSelectedVertices(selectedModel);
             updateVertexList();
             renderScene();
         }
     }
+
+    public class VertexListCell extends ListCell<String> {
+        private CheckBox checkBox;
+        private Text vertexText;
+
+        public VertexListCell() {
+            HBox hbox = new HBox(10);
+            vertexText = new Text();
+            checkBox = new CheckBox();
+            hbox.getChildren().addAll(vertexText, checkBox);
+            setGraphic(hbox);
+        }
+
+        @Override
+        protected void updateItem(String item, boolean empty) {
+            super.updateItem(item, empty);
+
+            if (empty) {
+                setGraphic(null);
+            } else {
+                vertexText.setText(item);
+                vertexText.setFill(Color.WHITE);
+                int index = getIndex();
+
+                checkBox.setSelected(RenderEngine.selectedVertexIndices.contains(index));
+                checkBox.setOnAction(event -> toggleSelection(index));
+                vertexText.setOnMouseClicked(event -> toggleSelection(index));
+
+                HBox hbox = new HBox();
+                hbox.setSpacing(10);
+                hbox.getChildren().add(checkBox);
+                hbox.getChildren().add(vertexText);
+                hbox.setAlignment(Pos.CENTER_LEFT);
+
+                setGraphic(hbox);
+            }
+        }
+
+        private void toggleSelection(int index) {
+            if (RenderEngine.selectedVertexIndices.contains(index)) {
+                RenderEngine.selectedVertexIndices.remove(Integer.valueOf(index));
+            } else {
+                RenderEngine.selectedVertexIndices.add(index);
+            }
+
+            updateVertexList();
+        }
+    }
+    /*   <----------------------------БЛОК С ВЕРШИНАМИ----------------------->   */
+
 
 
     /*   <----------------------------БЛОК ОБРАБОТКИ----------------------->   */
@@ -314,13 +425,24 @@ public class GuiController {
         checkMenuItem.selectedProperty().addListener((obs, oldVal, newVal) -> toggleButton.setSelected(newVal));
     }
 
+    private void bindToggleAndRadioButton(ToggleButton toggleButton, RadioButton radioButton) {
+        toggleButton.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            radioButton.setSelected(newVal);
+        });
+
+        radioButton.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            toggleButton.setSelected(newVal);
+        });
+    }
 
     private void handlePolygonMesh() {
         if (selectedModel != null) {
             if (togglePolygonMesh.isSelected()) {
                 showMessage("Полигональная сетка применена к: " + selectedModel.toString());
+                selectedModel.setPolygonMeshEnabled(true);
             } else {
                 showMessage("Удалена сетка с модели: " + selectedModel.toString());
+                selectedModel.setPolygonMeshEnabled(false);
             }
         } else {
             showMessage("Возникла ошибка, выберете модель, чтобы применить к ней изменения");
@@ -332,8 +454,10 @@ public class GuiController {
         if (selectedModel != null) {
             if (menuPolygonMesh.isSelected()) {
                 showMessage("Полигональная сетка применена к: " + selectedModel.toString());
+                selectedModel.setPolygonMeshEnabled(true);
             } else {
                 showMessage("Удалена сетка с модели: " + selectedModel.toString());
+                selectedModel.setPolygonMeshEnabled(false);
             }
         } else {
             showMessage("Возникла ошибка, выберете модель, чтобы применить к ней изменения");
@@ -341,38 +465,14 @@ public class GuiController {
         }
     }
 
-    private void handleUseTexture() {
-        if (selectedModel != null) {
-            if (toggleUseTexture.isSelected()) {
-                showMessage("Применена текстура к модели: " + selectedModel.toString());
-            } else {
-                showMessage("Удалена текстура модели: " + selectedModel.toString());
-            }
-        } else {
-            showMessage("Возникла ошибка, выберете модель, чтобы применить к ней изменения");
-            toggleUseTexture.setSelected(false);
-        }
-    }
-
-    private void handleUseTextureMenuItem() {
-        if (selectedModel != null) {
-            if (menuUseTexture.isSelected()) {
-                showMessage("Применена текстура к модели: " + selectedModel.toString());
-            } else {
-                showMessage("Удалена текстура модели: " + selectedModel.toString());
-            }
-        } else {
-            showMessage("Возникла ошибка, выберете модель, чтобы применить к ней изменения");
-            menuUseTexture.setSelected(false);
-        }
-    }
-
     private void handleUseLighting() {
         if (selectedModel != null) {
             if (toggleUseLighting.isSelected()) {
                 showMessage("Освещение применено к модели: " + selectedModel.toString());
+                selectedModel.setLightingEnabled(true);
             } else {
                 showMessage("Удалено освещение для модели: " + selectedModel.toString());
+                selectedModel.setLightingEnabled(false);
             }
         } else {
             showMessage("Возникла ошибка, выберете модель, чтобы применить к ней изменения");
@@ -384,8 +484,10 @@ public class GuiController {
         if (selectedModel != null) {
             if (menuUseLighting.isSelected()) {
                 showMessage("Освещение применено к модели: " + selectedModel.toString());
+                selectedModel.setLightingEnabled(true);
             } else {
                 showMessage("Удалено освещение для модели: " + selectedModel.toString());
+                selectedModel.setLightingEnabled(false);
             }
         } else {
             showMessage("Возникла ошибка, выберете модель, чтобы применить к ней изменения");
@@ -523,8 +625,6 @@ public class GuiController {
 
         HBox lightRow = createLightSourceRow("Light " + lightSources.size(), newLight);
         lightSourcesVBox.getChildren().add(lightRow);
-
-        System.out.println("Источник освещения успешно добавлен: " + newLight.getName());
     }
 
 
@@ -595,26 +695,149 @@ public class GuiController {
 
 
     /*   <----------------------------БЛОК ТЕМЫ----------------------->   */
+    private List<String> originalStylesheets = new ArrayList<>();
+
     @FXML
     public void switchToLightTheme() {
-        topMenuBar.getStylesheets().clear();
-        topMenuBar.getStylesheets().add(getClass().getResource("/com/cgvsu/fxml/lightTheme.css").toExternalForm());
-        topMenuPane.setStyle("-fx-background-color: gray;");
-        topMenuBar.setStyle("-fx-background-color: gray;");
+        isDarkTheme = !isDarkTheme;
+        if (originalStylesheets.isEmpty()) {
+            originalStylesheets.addAll(anchorPane.getStylesheets());
+        }
+
+        clearStyles(anchorPane);
+        anchorPane.getStylesheets().clear();
+        anchorPane.getStylesheets().add(getClass().getResource("/com/cgvsu/fxml/lightTheme.css").toExternalForm());
+    }
+
+    private void clearStyles(Parent parent) {
+        parent.getStylesheets().clear();
+
+        for (Node node : parent.getChildrenUnmodifiable()) {
+            if (node instanceof Parent) {
+                clearStyles((Parent) node);
+            }
+
+            if (!node.styleProperty().isBound()) {
+                node.setStyle("");
+            }
+        }
     }
 
     @FXML
     public void switchToDarkTheme() {
-        topMenuBar.getStylesheets().clear();
-        topMenuBar.getStylesheets().add(getClass().getResource("/com/cgvsu/fxml/menuStyleDark.css").toExternalForm());
-        topMenuPane.setStyle("-fx-background-color: #1D1D1D;");
-        topMenuBar.setStyle("-fx-background-color: #1D1D1D;");
+        isDarkTheme = true;
+        clearStyles(anchorPane);
+        anchorPane.getStylesheets().clear();
+        anchorPane.getStylesheets().add(getClass().getResource("/com/cgvsu/fxml/DarkTheme.css").toExternalForm());
     }
     /*   <----------------------------БЛОК ТЕМЫ----------------------->   */
 
-
-
     /*   <----------------------------БЛОК КАМЕРЫ----------------------->   */
+    private void updateCameraUI(Camera camera) {
+        if (camera != null) {
+            xCoordTextField.setText(String.valueOf(camera.getPosition().x));
+            yCoordTextField.setText(String.valueOf(camera.getPosition().y));
+            zCoordTextField.setText(String.valueOf(camera.getPosition().z));
+        }
+    }
+
+    private void openEditDialog(Camera camera, boolean isDarkTheme) {
+        if (camera == null) return;
+
+        Stage editStage = new Stage();
+        editStage.initStyle(StageStyle.TRANSPARENT);
+
+        editStage.setTitle("Edit Camera");
+        editStage.initModality(Modality.APPLICATION_MODAL);
+
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(15));
+        layout.setAlignment(Pos.CENTER);
+
+        Label positionLabel = new Label("Camera Position:");
+        TextField xField = new TextField(String.valueOf(camera.getPosition().x));
+        xField.setPromptText("X Coordinate");
+        TextField yField = new TextField(String.valueOf(camera.getPosition().y));
+        yField.setPromptText("Y Coordinate");
+        TextField zField = new TextField(String.valueOf(camera.getPosition().z));
+        zField.setPromptText("Z Coordinate");
+
+        Label targetLabel = new Label("Camera Target:");
+        TextField targetXField = new TextField(String.valueOf(camera.getTarget().x));
+        targetXField.setPromptText("Target X Coordinate");
+        TextField targetYField = new TextField(String.valueOf(camera.getTarget().y));
+        targetYField.setPromptText("Target Y Coordinate");
+        TextField targetZField = new TextField(String.valueOf(camera.getTarget().z));
+        targetZField.setPromptText("Target Z Coordinate");
+
+        Label fovLabel = new Label("Field of View:");
+        Slider fovSlider = new Slider(0.1, 180, camera.getFov());
+        fovSlider.setShowTickLabels(true);
+        fovSlider.setShowTickMarks(true);
+
+        HBox buttonBox = new HBox(10);
+        buttonBox.setAlignment(Pos.CENTER);
+
+        Button saveButton = new Button("Save");
+        Button cancelButton = new Button("Cancel");
+
+        buttonBox.getChildren().addAll(saveButton, cancelButton);
+
+        layout.getChildren().addAll(
+                new Label("Edit Camera Parameters"),
+                positionLabel,
+                new Label("X:"), xField,
+                new Label("Y:"), yField,
+                new Label("Z:"), zField,
+                targetLabel,
+                new Label("Target X:"), targetXField,
+                new Label("Target Y:"), targetYField,
+                new Label("Target Z:"), targetZField,
+                fovLabel, fovSlider,
+                buttonBox
+        );
+
+        Scene scene = new Scene(layout, 350, 600);
+        if (isDarkTheme) {
+            scene.getStylesheets().add(getClass().getResource("/com/cgvsu/fxml/DarkTheme.css").toExternalForm());
+        } else {
+            scene.getStylesheets().add(getClass().getResource("/com/cgvsu/fxml/lightTheme.css").toExternalForm());
+        }
+        editStage.setScene(scene);
+
+        saveButton.setOnAction(e -> {
+            try {
+                float x = Float.parseFloat(xField.getText());
+                float y = Float.parseFloat(yField.getText());
+                float z = Float.parseFloat(zField.getText());
+
+                float targetX = Float.parseFloat(targetXField.getText());
+                float targetY = Float.parseFloat(targetYField.getText());
+                float targetZ = Float.parseFloat(targetZField.getText());
+
+                float fov = (float) fovSlider.getValue();
+
+                camera.setPosition(new Vector3f(x, y, z));
+                camera.setTarget(new Vector3f(targetX, targetY, targetZ));
+                camera.setFov(fov);
+
+                updateCameraUI(camera);
+                camerasListView.refresh();
+
+                editStage.close();
+            } catch (NumberFormatException ex) {
+                showMessage("Ошибка: некорректные значения в полях");
+            }
+        });
+
+        cancelButton.setOnAction(e -> editStage.close());
+
+        editStage.showAndWait();
+    }
+
+    @FXML
+    private ListView<Camera> camerasListView;
+
     @FXML
     private void onAddCameraClick(ActionEvent event) {
         try {
@@ -624,167 +847,12 @@ public class GuiController {
 
             Camera newCamera = new Camera(new Vector3f(x, y, z), new Vector3f(0, 0, 0), 1.0F, 1, 0.01F, 100);
 
-            cameras.add(newCamera);
-
-            if (selectedCamera != null) {
-                updateSelectedCamera(selectedCamera, false);
-            }
+            camerasListView.getItems().add(newCamera);
 
             selectedCamera = newCamera;
-
-            HBox cameraRow = createCameraRow("Camera " + cameras.size(), newCamera);
-            camerasVBox.getChildren().add(cameraRow);
-
-            System.out.println("Создана камера с координатами: " + x + ", " + y + ", " + z);
+            camerasListView.getSelectionModel().select(newCamera);
         } catch (NumberFormatException e) {
             showMessage("Произошла ошибка, пожалуйста убедитесь, что параметры для координат камеры корректны");
-        }
-    }
-
-    private HBox createCameraRow(String cameraName, Camera camera) {
-        HBox cameraRow = new HBox(15);
-        cameraRow.setAlignment(Pos.CENTER_LEFT);
-
-        Label cameraLabel = new Label(cameraName);
-        cameraLabel.setStyle("-fx-text-fill: white;");
-
-        HBox buttonBox = new HBox(10);
-        buttonBox.setAlignment(Pos.CENTER_RIGHT);
-        HBox.setHgrow(buttonBox, Priority.ALWAYS);
-
-        Button selectButton = new Button("Select");
-        selectButton.setOnAction(e -> {
-            if (previousEditButton != null && previousEditButton.getStyle().contains("-fx-background-color: #46463c")) {
-                showMessage("Изменение параметров запрещено, так как активен режим редактирования.");
-                return;
-            }
-
-            xCoordTextField.setText(String.valueOf(camera.getPosition().x));
-            yCoordTextField.setText(String.valueOf(camera.getPosition().y));
-            zCoordTextField.setText(String.valueOf(camera.getPosition().z));
-
-            sliderFOV.setValue(camera.getFov());
-            sliderAR.setValue(camera.getAspectRatio());
-
-            if (previousCameraSelectButton != null) {
-                previousCameraSelectButton.setStyle("");
-            }
-
-            if (selectedCamera != null) {
-                updateSelectedCamera(selectedCamera, false);
-            }
-
-            selectedCamera = camera;
-            mainCamera = selectedCamera;
-            updateSelectedCamera(selectedCamera, true);
-
-            selectButton.setStyle("-fx-background-color: #46463c; -fx-text-fill: #1f1f1f;");
-            previousCameraSelectButton = selectButton;
-
-            System.out.println("Выбрана камера: " + cameraName);
-        });
-
-        Button editButton = new Button("Edit");
-        editButton.setOnAction(e -> {
-            if (previousEditButton != null && previousEditButton != editButton) {
-                previousEditButton.setStyle("");
-            }
-
-            editButton.setStyle("-fx-background-color: #46463c; -fx-text-fill: #1f1f1f;");
-            previousEditButton = editButton;
-
-            xCoordTextField.setText(String.valueOf(camera.getPosition().x));
-            yCoordTextField.setText(String.valueOf(camera.getPosition().y));
-            zCoordTextField.setText(String.valueOf(camera.getPosition().z));
-            sliderFOV.setValue(camera.getFov());
-            sliderAR.setValue(camera.getAspectRatio());
-
-            hboxAR.setVisible(true);
-            hboxFOV.setVisible(true);
-            xCoordTextField.setVisible(true);
-            yCoordTextField.setVisible(true);
-            zCoordTextField.setVisible(true);
-        });
-
-        Button saveButton = new Button("Save");
-        hboxFOV.getChildren().add(saveButton);
-
-        saveButton.setOnAction(saveEvent -> {
-            try {
-                saveButton.setStyle("-fx-background-color: #46463c; -fx-text-fill: #1f1f1f;");
-
-                Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.2), event -> {
-                    saveButton.setStyle("-fx-background-color: #1f1f1f; -fx-text-fill: #46463c;");
-                }));
-                timeline.play();
-
-                float x = Float.parseFloat(xCoordTextField.getText());
-                float y = Float.parseFloat(yCoordTextField.getText());
-                float z = Float.parseFloat(zCoordTextField.getText());
-                float fov = (float) sliderFOV.getValue();
-                float aspectRatio = (float) sliderAR.getValue();
-
-                camera.getPosition().set(x, y, z);
-                camera.setFov(fov);
-                camera.setAspectRatio(aspectRatio);
-
-                hboxAR.setVisible(false);
-                hboxFOV.setVisible(false);
-
-                System.out.println("Сохранены изменения для камеры: " + cameraName);
-                System.out.println("Координаты: " + camera.getPosition());
-                System.out.println("FOV: " + camera.getFov());
-                System.out.println("Aspect Ratio: " + camera.getAspectRatio());
-
-                editButton.setStyle("");
-                previousEditButton = null;
-            } catch (NumberFormatException ex) {
-                showMessage("Ошибка: Проверьте корректность введенных данных!");
-            }
-        });
-
-        Button deleteButton = new Button("Del");
-        deleteButton.setOnAction(e -> {
-            deleteButton.setStyle("-fx-background-color: #46463c; -fx-text-fill: #1f1f1f;");
-
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.2), event -> {
-                deleteButton.setStyle("-fx-background-color: #1f1f1f; -fx-text-fill: #46463c;");
-            }));
-            timeline.play();
-
-            if (previousEditButton != null && previousEditButton.getStyle().contains("-fx-background-color: #46463c")) {
-                showMessage("Изменение параметров запрещено, так как активен режим редактирования.");
-                return;
-            }
-
-            cameras.remove(camera);
-            camerasVBox.getChildren().remove(cameraRow);
-            if (selectedCamera == camera) {
-                selectedCamera = null;
-            }
-            updateSelectedCamera(selectedCamera, selectedCamera != null);
-        });
-
-        buttonBox.getChildren().addAll(selectButton, editButton, saveButton, deleteButton);
-        cameraRow.getChildren().addAll(cameraLabel, buttonBox);
-
-        return cameraRow;
-    }
-
-
-
-    private void updateSelectedCamera(Camera camera, boolean isSelected) {
-        for (int i = 0; i < camerasVBox.getChildren().size(); i++) {
-            HBox cameraRow = (HBox) camerasVBox.getChildren().get(i);
-            Camera rowCamera = cameras.get(i);
-
-            if (rowCamera == camera) {
-                if (isSelected) {
-                    cameraRow.setStyle("-fx-background-color: #1f1f1f;");
-                } else {
-                    cameraRow.setStyle("");
-                }
-            }
         }
     }
     /*   <----------------------------БЛОК КАМЕРЫ----------------------->   */
@@ -804,11 +872,9 @@ public class GuiController {
         String texturePath = file.getAbsolutePath();
         String textureName = file.getName();
 
-        // Добавление текстуры в ComboBox
         textureComboBox.getItems().add(textureName);
         textureComboBox.setValue(textureName);
 
-        // Создание строки для отображения текстуры в списке
         HBox textureRow = createTextureRow(textureName, texturePath);
         textureListVBox.getChildren().add(textureRow);
 
@@ -826,59 +892,23 @@ public class GuiController {
         buttonBox.setAlignment(Pos.CENTER_RIGHT);
         HBox.setHgrow(buttonBox, Priority.ALWAYS);
 
-        // Кнопка для выбора текстуры
-        Button selectButton = new Button("Select");
-        selectButton.setOnAction(e -> {
-            // Если текстура уже выбрана, сбрасываем выбор
-            if (previousTextureSelectButton != null) {
-                previousTextureSelectButton.setStyle("");
-            }
-
-            selectedTexture = texturePath; // Обновляем выбранную текстуру
-            updateSelectedTexture(texturePath, true); // Отображаем выбранную текстуру
-
-            System.out.println("Выбрана текстура: " + textureName);
-            selectButton.setStyle("-fx-background-color: #46463c; -fx-text-fill: #1f1f1f; "); // Стиль для выбранной текстуры
-
-            previousTextureSelectButton = selectButton;
-        });
-
-        // Кнопка для удаления текстуры
         Button deleteButton = new Button("Delete");
         deleteButton.setOnAction(e -> {
             textureComboBox.getItems().remove(textureName);
             textureListVBox.getChildren().remove(textureRow);
             if (selectedTexture.equals(texturePath)) {
-                selectedTexture = null; // Сбрасываем выбранную текстуру, если она была удалена
+                selectedTexture = null;
             }
-            updateSelectedTexture(selectedTexture, selectedTexture != null); // Обновляем отображение выбранной текстуры
             System.out.println("Вы удалили текстуру: " + textureName);
         });
 
-        buttonBox.getChildren().addAll(selectButton, deleteButton);
+        buttonBox.getChildren().addAll(deleteButton);
 
         textureRow.getChildren().addAll(textureLabel, buttonBox);
 
         return textureRow;
     }
 
-    // Метод для обновления отображения выбранной текстуры
-    private void updateSelectedTexture(String texturePath, boolean isSelected) {
-        for (int i = 0; i < textureListVBox.getChildren().size(); i++) {
-            HBox textureRow = (HBox) textureListVBox.getChildren().get(i);
-            String rowTexturePath = textureComboBox.getItems().get(i);
-
-            if (rowTexturePath.equals(texturePath)) {
-                if (isSelected) {
-                    textureRow.setStyle("-fx-background-color: #1f1f1f;"); // Выделяем строку выбранной текстуры
-                } else {
-                    textureRow.setStyle(""); // Убираем выделение
-                }
-            } else {
-                textureRow.setStyle(""); // Убираем выделение для других текстур
-            }
-        }
-    }
 
 
     @FXML
@@ -930,8 +960,6 @@ public class GuiController {
             Model model = ObjReader.read(fileContent);
 
             models.add(model);
-            selectedModel = model;
-            mesh = model;
 
             if (selectedModel != null) {
                 updateSelected(selectedModel, false);
@@ -965,12 +993,15 @@ public class GuiController {
                 selectedModel = null;
                 selectButton.setStyle("");
                 slidePanelOut();
-                RenderEngine.resetSelectedVertex();
+                RenderEngine.resetSelectedVertices();
                 updateVertexList();
+                toggleVertices.setSelected(false);
+                togglePolygonMesh.setSelected(false);
+                toggleUseLighting.setSelected(false);
             } else {
                 if (previousModelSelectButton != null) {
                     previousModelSelectButton.setStyle("");
-                    RenderEngine.resetSelectedVertex();
+                    RenderEngine.resetSelectedVertices();
                 }
 
                 if (selectedModel != null) {
@@ -1000,6 +1031,8 @@ public class GuiController {
             updateSelected(selectedModel, selectedModel != null);
             vertexListView.getItems().clear();
             toggleVertices.setSelected(false);
+            togglePolygonMesh.setSelected(false);
+            toggleUseLighting.setSelected(false);
         });
 
         buttonBox.getChildren().addAll(selectButton, deleteButton);
@@ -1026,28 +1059,10 @@ public class GuiController {
         }
     }
 
-    private void applyTexture(String modelName) {
-        if (selectedModel != null) {
-            System.out.println("Applying texture to: " + modelName);
-            // !!!СДЕЛАТЬ ЛОГИКУ НАЛОЖЕНИЯ ТЕКСТУРЫ!!!
-        } else {
-            System.out.println("No model selected for texture application.");
-        }
-    }
-
-    private void deleteTexture(String modelName) {
-        if (selectedModel != null) {
-            System.out.println("Deleting texture of: " + modelName);
-            // !!!СДЕЛАТЬ ЛОГИКУ УДАЛЕНИЯ ТЕКСТУРЫ!!!
-        } else {
-            System.out.println("No texture to delete");
-        }
-    }
-
     @FXML
     private void onSaveModelMenuItemClick() {
         if (selectedModel == null) {
-            System.out.println("No model selected to save.");
+            showMessage("Выберите модель");
             return;
         }
 
@@ -1062,7 +1077,7 @@ public class GuiController {
 
         try {
             ObjWriter.write(selectedModel, file.getAbsolutePath());
-            System.out.println("Модель успешно сохранена: " + file.getAbsolutePath());
+            showMessage("Модель успешно сохранена: " + file.getAbsolutePath());
         } catch (IOException exception) {
             showMessage("Не удалось сохранить файл: " + exception.getMessage());
         }

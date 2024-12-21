@@ -13,7 +13,6 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToggleButton?>
@@ -27,7 +26,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="anchorPane" stylesheets="@menuStyleDark.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
+<AnchorPane fx:id="anchorPane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
       <StackPane style="-fx-background-color: #1a1919;">
       <children>
               <Canvas fx:id="canvas" height="870" width="1600" />
@@ -43,12 +42,16 @@
                                     <children>
                                        <VBox layoutX="-14.0" layoutY="-10.0" prefHeight="195.0" prefWidth="387.0">
                                           <children>
-                                             <Button alignment="TOP_LEFT" mnemonicParsing="false" onAction="#handleDeleteVertex" prefHeight="39.0" prefWidth="378.0" style="-fx-background-color: #1f1f1f; -fx-border-width: 0;" text="Удалить" textFill="#46463c" underline="true">
+                                             <Button alignment="TOP_LEFT" mnemonicParsing="false" onAction="#handleDeleteVertices" prefHeight="39.0" prefWidth="378.0" style="-fx-background-color: #1f1f1f; -fx-border-width: 0;" text="Удалить" textFill="#46463c" underline="true">
                                                 <font>
                                                    <Font size="18.0" />
                                                 </font>
                                              </Button>
-                                             <ListView fx:id="vertexListView" prefHeight="214.0" prefWidth="373.0" stylesheets="@listView.css" />
+                                             <ListView fx:id="vertexListView" prefHeight="214.0" prefWidth="373.0">
+                                                <stylesheets>
+                                                   <URL value="@listView.css" />
+                                                   <URL value="@DarkTheme.css" />
+                                                </stylesheets></ListView>
                                           </children>
                                        </VBox>
                                     </children>
@@ -112,53 +115,11 @@
                                                          <TextField fx:id="zCoordTextField" promptText="Z" style="-fx-background-color: #2f2f2f; -fx-text-fill: #46463c;" />
                                                       </children>
                                                    </HBox>
-                                                   <HBox fx:id="hboxFOV" prefWidth="352.0" visible="false">
-                                                      <children>
-                                                         <Text fill="#46463c" strokeType="OUTSIDE" strokeWidth="0.0" text="Field Of View" textAlignment="CENTER" wrappingWidth="136.87109375">
-                                                            <font>
-                                                               <Font size="20.0" />
-                                                            </font>
-                                                            <HBox.margin>
-                                                               <Insets left="5.0" />
-                                                            </HBox.margin>
-                                                         </Text>
-                                                          <Slider fx:id="sliderFOV" max="180" min="1" prefHeight="27.0" prefWidth="315.0" value="45">
-                                                            <HBox.margin>
-                                                               <Insets />
-                                                            </HBox.margin>
-                                                            <padding>
-                                                               <Insets top="4.0" />
-                                                            </padding>
-                                                         </Slider>
-                                                      </children>
-                                                   </HBox>
-                                                   <HBox fx:id="hboxAR" prefWidth="352.0" visible="false">
-                                                      <children>
-                                                         <Text fill="#46463c" strokeType="OUTSIDE" strokeWidth="0.0" text="Aspect Ratio" textAlignment="CENTER" wrappingWidth="134.87109375">
-                                                            <font>
-                                                               <Font size="20.0" />
-                                                            </font>
-                                                            <HBox.margin>
-                                                               <Insets left="5.0" />
-                                                            </HBox.margin>
-                                                         </Text>
-                                                          <Slider fx:id="sliderAR" max="3.0" min="0.1" prefHeight="23.0" prefWidth="320.0" value="1.77" />
-                                                      </children>
-                                                   </HBox>
-                                                   <ScrollPane hbarPolicy="NEVER" prefHeight="133.0" prefWidth="355.0" style="-fx-background-color: #1f1f1f;">
+                                                   <ListView fx:id="camerasListView" prefHeight="222.0" prefWidth="355.0">
                                                       <stylesheets>
-                                                         <URL value="@modelBox.css" />
-                                                         <URL value="@scrollpane.css" />
-                                                      </stylesheets>
-                                                      <content>
-                                                         <VBox fx:id="camerasVBox" nodeOrientation="LEFT_TO_RIGHT" prefHeight="128.0" prefWidth="336.0" style="-fx-background-color: #1f1f1f; -fx-padding: 10; -fx-spacing: 10;">
-                                                            <stylesheets>
-                                                               <URL value="@scrollpane.css" />
-                                                               <URL value="@modelBox.css" />
-                                                            </stylesheets>
-                                                         </VBox>
-                                                      </content>
-                                                   </ScrollPane>
+                                                         <URL value="@listView.css" />
+                                                         <URL value="@DarkTheme.css" />
+                                                      </stylesheets></ListView>
                                                 </children>
                                              </VBox>
                                           </children>
@@ -273,7 +234,6 @@
                         <Menu mnemonicParsing="false" text="Rendering mode">
                           <items>
                               <CheckMenuItem fx:id="menuPolygonMesh" mnemonicParsing="false" text="Draw polygonal mesh" />
-                              <CheckMenuItem fx:id="menuUseTexture" mnemonicParsing="false" text="Use texture" />
                               <CheckMenuItem fx:id="menuUseLighting" mnemonicParsing="false" text="Use lighting" />
                           </items>
                         </Menu>
@@ -330,11 +290,6 @@
                                        <Insets right="10.0" />
                                     </HBox.margin>
                                  </ToggleButton>
-                                 <ToggleButton fx:id="toggleUseTexture" mnemonicParsing="false" text="Use texture">
-                                    <HBox.margin>
-                                       <Insets right="10.0" />
-                                    </HBox.margin>
-                                 </ToggleButton>
                                  <ToggleButton fx:id="toggleUseLighting" mnemonicParsing="false" text="Use lighting" />
                                  <ToggleButton fx:id="toggleVertices" mnemonicParsing="false" stylesheets="@buttonDark.css" text="Vertices">
                                     <HBox.margin>
@@ -355,7 +310,7 @@
       <children>
          <VBox prefHeight="214.0" prefWidth="198.0" stylesheets="@textureDark.css">
             <children>
-               <RadioButton fx:id="textureRadioButton" mnemonicParsing="false" text="Using Texture">
+               <RadioButton fx:id="textureRadioButton" mnemonicParsing="false" onAction="#applyTextureOrColor" text="Using Texture">
                   <VBox.margin>
                      <Insets bottom="5.0" left="5.0" top="5.0" />
                   </VBox.margin>
@@ -363,7 +318,7 @@
                      <Font name="System Bold" size="16.0" />
                   </font>
                </RadioButton>
-               <RadioButton fx:id="colorRadioButton" mnemonicParsing="false" text="Using color">
+               <RadioButton fx:id="colorRadioButton" mnemonicParsing="false" onAction="#applyTextureOrColor" text="Using color">
                   <VBox.margin>
                      <Insets bottom="5.0" left="5.0" top="5.0" />
                   </VBox.margin>
