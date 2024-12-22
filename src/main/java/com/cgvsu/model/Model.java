@@ -11,7 +11,7 @@ public class Model implements Cloneable {
     public ArrayList<Vector2f> textureVertices = new ArrayList<>();
     public ArrayList<Vector3f> normals = new ArrayList<>();
     public ArrayList<Polygon> polygons = new ArrayList<>();
-
+    public String name;
 
     private boolean verticesVisible = false;
     private boolean polygonMeshEnabled = false;
@@ -21,6 +21,13 @@ public class Model implements Cloneable {
     public Model() {
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     // Метод клонирования вершин
     public ArrayList<Vector3f> cloneVertices() {

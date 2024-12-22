@@ -36,7 +36,7 @@
                   <content>
                         <VBox prefHeight="2000.0" prefWidth="373.0" style="-fx-background-color: #1f1f1f;">
                             <children>
-                           <TitledPane animated="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Editing" textFill="#46463c">
+                           <TitledPane animated="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Editing" textFill="#46463c" expanded="false">
                               <content>
                                  <AnchorPane minHeight="-Infinity" minWidth="0.0" prefHeight="170.0" prefWidth="347.0">
                                     <children>
@@ -61,33 +61,25 @@
                                  <Font size="19.0" />
                               </font>
                            </TitledPane>
-                                <TitledPane animated="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Models" textFill="#46463c">
+                                <TitledPane animated="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Models" textFill="#46463c" expanded="false">
                                     <content>
                                         <AnchorPane minHeight="-Infinity" minWidth="0.0" prefHeight="120.0" prefWidth="200.0">
                                             <children>
-                                                <ScrollPane hbarPolicy="NEVER" layoutX="-14.0" layoutY="-12.0" prefHeight="149.0" prefWidth="374.0" style="-fx-background-color: #1f1f1f;">
-                                                    <stylesheets>
-                                                        <URL value="@modelBox.css" />
-                                                        <URL value="@scrollpane.css" />
-                                                    </stylesheets>
-                                                    <content>
-                                                        <VBox prefHeight="143.0" prefWidth="370.0">
-                                                            <children>
-                                                                <Button alignment="TOP_LEFT" mnemonicParsing="false" onAction="#onAddModelClick" prefHeight="41.0" prefWidth="372.0" style="-fx-background-color: #1f1f1f; -fx-border-width: 0;" text="Add model" textFill="#46463c" underline="true">
-                                                                    <font>
-                                                                        <Font size="18.0" />
-                                                                    </font>
-                                                                </Button>
-                                                                <VBox fx:id="modelListVBox" nodeOrientation="LEFT_TO_RIGHT" prefHeight="159.0" prefWidth="370.0" style="-fx-background-color: #1f1f1f; -fx-padding: 10; -fx-spacing: 10;">
-                                                                    <stylesheets>
-                                                                        <URL value="@scrollpane.css" />
-                                                                        <URL value="@modelBox.css" />
-                                                                    </stylesheets>
-                                                                </VBox>
-                                                            </children>
-                                                        </VBox>
-                                                    </content>
-                                                </ScrollPane>
+                                       <VBox layoutX="-13.0" layoutY="-11.0" prefHeight="149.0" prefWidth="387.0">
+                                          <children>
+                                                          <Button alignment="TOP_LEFT" mnemonicParsing="false" onAction="#onAddModelClick" prefHeight="41.0" prefWidth="372.0" style="-fx-background-color: #1f1f1f; -fx-border-width: 0;" text="Add model" textFill="#46463c" underline="true">
+                                                              <font>
+                                                                  <Font size="18.0" />
+                                                              </font>
+                                                          </Button>
+                                             <ListView fx:id="modelListView" prefHeight="143.0" prefWidth="374.0">
+                                                <stylesheets>
+                                                   <URL value="@listView.css" />
+                                                   <URL value="@DarkTheme.css" />
+                                                </stylesheets>
+                                             </ListView>
+                                          </children>
+                                       </VBox>
                                             </children>
                                         </AnchorPane>
                                     </content>
@@ -95,7 +87,7 @@
                                         <Font size="19.0" />
                                     </font>
                                 </TitledPane>
-                           <TitledPane animated="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Cameras" textFill="#46463c">
+                           <TitledPane animated="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Cameras" textFill="#46463c" expanded="false">
                               <content>
                                  <AnchorPane minHeight="-Infinity" minWidth="0.0" prefHeight="270.0" prefWidth="347.0">
                                     <children>
@@ -131,7 +123,7 @@
                                  <Font size="19.0" />
                               </font>
                            </TitledPane>
-                           <TitledPane animated="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Texture Manager" textFill="#46463c">
+                           <TitledPane animated="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Texture Manager" textFill="#46463c" expanded="false">
                               <content>
                                  <AnchorPane minHeight="-Infinity" minWidth="0.0" prefHeight="120.0" prefWidth="347.0">
                                     <children>
@@ -165,7 +157,7 @@
                                  <Font size="19.0" />
                               </font>
                            </TitledPane>
-                           <TitledPane animated="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Lightning" textFill="#46463c">
+                           <TitledPane animated="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Lightning" textFill="#46463c" expanded="false">
                               <content>
                                  <AnchorPane minHeight="-Infinity" minWidth="0.0" prefHeight="170.0" prefWidth="347.0">
                                     <children>
