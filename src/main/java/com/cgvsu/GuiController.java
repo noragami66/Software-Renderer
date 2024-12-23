@@ -39,15 +39,14 @@ import com.cgvsu.model.Model;
 import com.cgvsu.render_engine.Camera;
 
 import static com.cgvsu.SceneTools.*;
+import static com.cgvsu.render_engine.RenderEngine.resetSelectedVertices;
+import static com.cgvsu.render_engine.RenderEngine.selectedVertexIndices;
 
 public class GuiController {
     final private float TRANSLATION = 0.5F;
 
     @FXML
     private VBox textureListVBox;
-
-    @FXML
-    private VBox modelListVBox;
 
     @FXML
     private VBox lightSourcesVBox;
@@ -298,6 +297,8 @@ public class GuiController {
                         modelListView.getItems().remove(model);
                         slidePanelOut();
                         vertexListView.getItems().clear();
+                        resetSelectedVertices();
+                        updateButtonState();
                     });
 
                     if (isDarkTheme) {
@@ -325,11 +326,13 @@ public class GuiController {
                                 updateButtonState();
                                 slidePanelOut();
                                 vertexListView.getItems().clear();
+                                resetSelectedVertices();
                             } else {
                                 selectedModel = model;
                                 updateButtonState();
                                 slidePanelIn();
                                 updateVertexList();
+                                resetSelectedVertices();
                             }
                         }
                     });
@@ -352,7 +355,11 @@ public class GuiController {
     }
 
     private void updateButtonState() {
-        if (selectedModel != null) {
+        if (selectedModel == null) {
+            toggleVertices.setSelected(false);
+            toggleUseLighting.setSelected(false);
+            togglePolygonMesh.setSelected(false);
+        } else {
             if (selectedModel.isVerticesVisible()){
                 toggleVertices.setSelected(true);
             }else {
@@ -457,7 +464,7 @@ public class GuiController {
                 vertexText.setFill(Color.WHITE);
                 int index = getIndex();
 
-                checkBox.setSelected(RenderEngine.selectedVertexIndices.contains(index));
+                checkBox.setSelected(selectedVertexIndices.contains(index));
                 checkBox.setOnAction(event -> toggleSelection(index));
                 vertexText.setOnMouseClicked(event -> toggleSelection(index));
 
@@ -472,10 +479,10 @@ public class GuiController {
         }
 
         private void toggleSelection(int index) {
-            if (RenderEngine.selectedVertexIndices.contains(index)) {
-                RenderEngine.selectedVertexIndices.remove(Integer.valueOf(index));
+            if (selectedVertexIndices.contains(index)) {
+                selectedVertexIndices.remove(Integer.valueOf(index));
             } else {
-                RenderEngine.selectedVertexIndices.add(index);
+                selectedVertexIndices.add(index);
             }
 
             updateVertexList();
