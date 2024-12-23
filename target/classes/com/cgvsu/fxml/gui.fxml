@@ -123,7 +123,7 @@
                                  <Font size="19.0" />
                               </font>
                            </TitledPane>
-                           <TitledPane animated="false" expanded="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Texture Manager" textFill="#46463c">
+                           <TitledPane animated="false" expanded="true" prefWidth="373.0" stylesheets="@titledPane.css" text="Texture Manager" textFill="#46463c">
                               <content>
                                  <AnchorPane minHeight="-Infinity" minWidth="0.0" prefHeight="120.0" prefWidth="347.0">
                                     <children>
@@ -268,37 +268,36 @@
                </Pane>
             </top>
             <center>
-               <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                  <bottom>
-                     <Pane prefHeight="42.0" prefWidth="1227.0" style="-fx-background-color: #1f1f1f; -fx-border-color: #1D1D1D;" BorderPane.alignment="CENTER">
-                        <opaqueInsets>
-                           <Insets right="100.0" />
-                        </opaqueInsets>
-                        <children>
-                           <HBox layoutX="14.0" layoutY="3.0" prefHeight="34.0" prefWidth="608.0" stylesheets="@buttonDark.css">
-                              <children>
-                                 <ToggleButton fx:id="togglePolygonMesh" mnemonicParsing="false" stylesheets="@buttonDark.css" text="Draw polygonal mesh">
-                                    <HBox.margin>
-                                       <Insets right="10.0" />
-                                    </HBox.margin>
-                                 </ToggleButton>
-                                 <ToggleButton fx:id="toggleUseLighting" mnemonicParsing="false" text="Use lighting" />
-                                 <ToggleButton fx:id="toggleVertices" mnemonicParsing="false" stylesheets="@buttonDark.css" text="Vertices">
-                                    <HBox.margin>
-                                       <Insets left="5.0" />
-                                    </HBox.margin>
-                                 </ToggleButton>
-                              </children>
-                           </HBox>
-                        </children>
-                     </Pane>
-                  </bottom>
-               </BorderPane>
+                <BorderPane fx:id="objectBorderPane" onDragDropped="#handleDropObj" onDragEntered="#handleDragEnteredObj" onDragExited="#handleDragExitedObj" onDragOver="#handleDragOverObj" prefHeight="778.0" prefWidth="1225.0" />
             </center>
+            <bottom>
+               <Pane prefHeight="42.0" prefWidth="1227.0" style="-fx-background-color: #1f1f1f; -fx-border-color: #1D1D1D;" BorderPane.alignment="CENTER">
+                  <opaqueInsets>
+                     <Insets right="100.0" />
+                  </opaqueInsets>
+                  <children>
+                     <HBox layoutX="14.0" layoutY="3.0" prefHeight="34.0" prefWidth="608.0" stylesheets="@buttonDark.css">
+                        <children>
+                           <ToggleButton fx:id="togglePolygonMesh" mnemonicParsing="false" stylesheets="@buttonDark.css" text="Draw polygonal mesh">
+                              <HBox.margin>
+                                 <Insets right="10.0" />
+                              </HBox.margin>
+                           </ToggleButton>
+                           <ToggleButton fx:id="toggleUseLighting" mnemonicParsing="false" text="Use lighting" />
+                           <ToggleButton fx:id="toggleVertices" mnemonicParsing="false" stylesheets="@buttonDark.css" text="Vertices">
+                              <HBox.margin>
+                                 <Insets left="5.0" />
+                              </HBox.margin>
+                           </ToggleButton>
+                        </children>
+                     </HBox>
+                  </children>
+               </Pane>
+            </bottom>
           </BorderPane>
       </children>
       </StackPane>
-    <VBox fx:id="sidePanel" layoutX="-185.0" layoutY="74.0" prefHeight="740.0" prefWidth="198.0" style="-fx-background-color: #1f1f1f;">
+    <VBox fx:id="sidePanel" layoutX="-200.0" layoutY="74.0" prefHeight="740.0" prefWidth="198.0" style="-fx-background-color: #1f1f1f;">
       <children>
          <VBox fx:id="cameraCoordinatesVBox111" prefHeight="174.0" prefWidth="434.0" style="-fx-background-color: #1f1f1f; -fx-padding: 10; -fx-spacing: 10;">
             <children>

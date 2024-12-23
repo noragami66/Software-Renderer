@@ -19,7 +19,11 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -342,6 +346,85 @@ public class GuiController {
         });
     }
 
+    /*   <----------------------------DRAG AND DROP----------------------->   */
+    @FXML
+    private BorderPane objectBorderPane;
+
+    public void handleDragOverObj(DragEvent event) {
+        if (event.getGestureSource() != objectBorderPane && event.getDragboard().hasFiles()) {
+            event.acceptTransferModes(TransferMode.COPY);
+        }
+        event.consume();
+    }
+
+    public void handleDragEnteredObj(DragEvent event) {
+        if (event.getGestureSource() != objectBorderPane && event.getDragboard().hasFiles()) {
+            objectBorderPane.setStyle("-fx-background-color: #46463c; -fx-opacity: 0.25");
+            applyBackgroundAndBlurEffect(true,true);
+        }
+        event.consume();
+    }
+
+    private void applyBackgroundAndBlurEffect(boolean apply, boolean animateOpacity) {
+        Timeline timeline = new Timeline();
+
+        GaussianBlur blur = new GaussianBlur();
+        KeyFrame blurKeyFrame = new KeyFrame(Duration.millis(150),
+                new javafx.animation.KeyValue(blur.radiusProperty(), apply ? 15 : 0));
+
+        if (animateOpacity) {
+            if (apply) {
+                objectBorderPane.setOpacity(0);
+            } else {
+                objectBorderPane.setOpacity(0.25);
+            }
+            KeyFrame opacityKeyFrame = new KeyFrame(Duration.millis(150),
+                    new javafx.animation.KeyValue(objectBorderPane.opacityProperty(), apply ? 0.25 : 0));
+            timeline.getKeyFrames().add(opacityKeyFrame);
+        } else if (!apply) {
+            objectBorderPane.setStyle("-fx-background-color: transparent;");
+        }
+
+        timeline.getKeyFrames().add(blurKeyFrame);
+
+        canvas.setEffect(blur);
+
+        timeline.play();
+    }
+
+    public void handleDragExitedObj(DragEvent event) {
+        applyBackgroundAndBlurEffect(false,true);
+        event.consume();
+    }
+
+    public void handleDropObj(DragEvent event) {
+        Dragboard db = event.getDragboard();
+        boolean success = false;
+
+        if (db.hasFiles()) {
+            List<File> files = db.getFiles();
+            for (File file : files) {
+                if (file.getName().endsWith(".obj")) {
+                    loadModelFromFile(file);
+                    Model model = SceneTools.addModel(file);
+                    modelListView.getItems().add(model);
+                    if (model != null) {
+                        success = true;
+                    } else {
+                        showMessage("Не удалось загрузить модель: " + file.getName());
+                    }
+                } else {
+                    showMessage("Недопустимый файл: " + file.getName());
+                }
+            }
+        }
+
+        event.setDropCompleted(success);
+        event.consume();
+    }
+    /*   <----------------------------DRAG AND DROP----------------------->   */
+
+
     /*   <----------------------------БЛОК С ВЕРШИНАМИ----------------------->   */
     public void handleToggleVerticesAction() {
         if (selectedModel == null) {
@@ -597,7 +680,7 @@ public class GuiController {
 
     private void slidePanelIn() {
         TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), sidePanel);
-        slideIn.setToX(180);
+        slideIn.setToX(200);
         slideIn.play();
     }
 
