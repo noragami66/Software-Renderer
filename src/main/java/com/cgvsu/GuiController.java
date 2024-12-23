@@ -28,8 +28,7 @@ import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
-import java.nio.file.Files;
-import java.nio.file.Path;
+
 import java.io.IOException;
 import java.io.File;
 import java.util.ArrayList;
@@ -37,7 +36,6 @@ import java.util.List;
 import javax.vecmath.Vector3f;
 
 import com.cgvsu.model.Model;
-import com.cgvsu.objreader.ObjReader;
 import com.cgvsu.render_engine.Camera;
 
 import static com.cgvsu.SceneTools.*;
@@ -169,8 +167,6 @@ public class GuiController {
         timeline.getKeyFrames().add(frame);
         timeline.play();
 
-        colorRadioButton.setSelected(true);
-
         bindToggleAndMenuItem(togglePolygonMesh, menuPolygonMesh);
 
         bindToggleAndMenuItem(toggleUseLighting, menuUseLighting);
@@ -181,14 +177,34 @@ public class GuiController {
         toggleUseLighting.setOnAction(event -> handleUseLighting());
         menuUseLighting.setOnAction(event -> handleUseLightingMenuItem());
 
+        colorPicker.setValue(Color.BLACK);
+
+        colorRadioButton.setSelected(true);
+        colorPicker.setVisible(true);
+        textureComboBox.setVisible(false);
+
         textureRadioButton.setOnAction(e -> {
-            if (selectedTexture != null) {
-                handleRadioButtonChange(textureRadioButton);
+            if (!textureRadioButton.isSelected()) {
+                textureRadioButton.setSelected(true);
+            }
+            handleRadioButtonChange(textureRadioButton);
+        });
+
+        colorRadioButton.setOnAction(e -> {
+            if (!colorRadioButton.isSelected()) {
+                colorRadioButton.setSelected(true);
+            }
+            handleRadioButtonChange(colorRadioButton);
+        });
+
+        textureComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                chooseTexture(newValue);
                 applyTextureOrColor();
             }
         });
-        colorRadioButton.setOnAction(e -> {
-            handleRadioButtonChange(colorRadioButton);
+
+        colorPicker.setOnAction(e -> {
             applyTextureOrColor();
         });
 
@@ -260,7 +276,7 @@ public class GuiController {
 
         textureComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                setSelectedTexture(newValue);
+                chooseTexture(newValue);
             }
         });
 
@@ -351,6 +367,19 @@ public class GuiController {
                 togglePolygonMesh.setSelected(true);
             }else {
                 togglePolygonMesh.setSelected(false);
+            }
+            if (selectedModel.isUsingTexture()) {
+                textureRadioButton.setSelected(true);
+                textureComboBox.setVisible(true);
+                textureComboBox.getSelectionModel().select(selectedModel.getTexture());
+                colorRadioButton.setSelected(false);
+                colorPicker.setVisible(false);
+            } else {
+                textureRadioButton.setSelected(false);
+                textureComboBox.setVisible(false);
+                colorRadioButton.setSelected(true);
+                colorPicker.setVisible(true);
+                colorPicker.setValue(selectedModel.getColor());
             }
         }
     }
@@ -578,6 +607,8 @@ public class GuiController {
             float y = Float.parseFloat(yTransformCoords.getText());
             float z = Float.parseFloat(zTransformCoords.getText());
             SceneTools.applyTransform(selectedModel, x, y, z);
+            showMessage("Трансформация: " + selectedModel.getName()
+                    + " с x = " + x + " y = " + y + " z = " + z);
         } catch (NumberFormatException e) {
             showMessage("Возникла ошибка: укажите числовые значения для переноса модели");
         }
@@ -590,6 +621,8 @@ public class GuiController {
             float y = Float.parseFloat(yRotateCoords.getText());
             float z = Float.parseFloat(zRotateCoords.getText());
             SceneTools.applyRotate(selectedModel, x, y, z);
+            showMessage("Поворот: " + selectedModel.getName()
+                    + " с  x = " + x + " y = " + y + " z = " + z);
         } catch (NumberFormatException e) {
             showMessage("Возникла ошибка: укажите числовые значения для поворота модели в пространстве");
         }
@@ -602,6 +635,8 @@ public class GuiController {
             float y = Float.parseFloat(yScaleCoords.getText());
             float z = Float.parseFloat(zScaleCoords.getText());
             SceneTools.applyScale(selectedModel, x, y, z);
+            showMessage("Изменение масштаба: " + selectedModel.getName()
+                    + " с x = " + x + " y = " + y + " z = " + z);
         } catch (NumberFormatException e) {
             showMessage("Возникла ошибка: укажите числовые значения для масштабирования модели");
         }
@@ -848,7 +883,6 @@ public class GuiController {
         try {
             String textureName = SceneTools.addTexture(file.getName());
             textureComboBox.getItems().add(textureName);
-            textureComboBox.setValue(textureName);
 
             HBox textureRow = createTextureRow(textureName, file.getName());
             textureListVBox.getChildren().add(textureRow);
@@ -886,33 +920,42 @@ public class GuiController {
         return textureRow;
     }
 
-
-
     @FXML
     private void handleRadioButtonChange(RadioButton selectedRadioButton) {
         if (selectedRadioButton == textureRadioButton) {
             colorRadioButton.setSelected(false);
-        }
-        else if (selectedRadioButton == colorRadioButton) {
+
+            colorPicker.setVisible(false);
+            textureComboBox.setVisible(true);
+        } else if (selectedRadioButton == colorRadioButton) {
             textureRadioButton.setSelected(false);
+
+            colorPicker.setVisible(true);
+            textureComboBox.setVisible(false);
         }
     }
 
-
     @FXML
     private void applyTextureOrColor() {
+        if (selectedModel == null) {
+            showMessage("Ошибка: необходимо выбрать модель.");
+            return;
+        }
+
         if (textureRadioButton.isSelected()) {
-            String selectedTexture = textureComboBox.getValue();
             if (selectedTexture != null) {
-                showMessage("Применена текстура: " + selectedTexture);
+                SceneTools.setTexture();
+                showMessage("Применена текстура: " + selectedTexture + " к модели " + selectedModel.getName());
             } else {
-                showMessage("Возникла ошибка: необходимо выбрать текстуру");
+                showMessage("Ошибка: необходимо выбрать текстуру.");
+                textureComboBox.getSelectionModel().clearSelection();
             }
         } else if (colorRadioButton.isSelected()) {
-            Color selectedColor = colorPicker.getValue();
-            showMessage("Применен цвет: " + selectedColor);
+            selectedColor = colorPicker.getValue();
+            SceneTools.setColor();
+            showMessage("Применен цвет: " + selectedColor + " к модели " + selectedModel.getName());
         } else {
-            showMessage("Вы должны выбрать режим текстуры или цвета");
+            showMessage("Ошибка: необходимо выбрать текстуру или цвет.");
         }
     }
     /*   <----------------------------БЛОК ТЕКСТУРЫ----------------------->   */

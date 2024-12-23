@@ -7,6 +7,7 @@ import com.cgvsu.objreader.ObjReader;
 import com.cgvsu.render_engine.Camera;
 import com.cgvsu.render_engine.LightSource;
 import javafx.scene.control.Button;
+import javafx.scene.paint.Color;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class SceneTools {
     public static Model selectedModel;
     public static Camera selectedCamera;
     public static LightSource selectedLightSource = null;
+    public static Color selectedColor;
 
     public static Button previousLightSourceSelectButton = null;
 
@@ -75,7 +77,23 @@ public class SceneTools {
 
 
     /*   <----------------------------БЛОК ТЕКСТУРЫ----------------------->   */
-    public static void setSelectedTexture(String textureName) {
+    public static void setTexture() {
+        if (selectedModel != null && selectedTexture != null) {
+            selectedModel.setUsingTexture(true);
+            selectedModel.setUsingColor(false);
+            selectedModel.setTexture(selectedTexture);
+        }
+    }
+
+    public static void setColor() {
+        if (selectedModel != null && selectedColor != null) {
+            selectedModel.setUsingTexture(false);
+            selectedModel.setUsingColor(true);
+            selectedModel.setColor(selectedColor);
+        }
+    }
+
+    public static void chooseTexture(String textureName) {
         if (Textures.contains(textureName)) {
             selectedTexture = textureName;
             System.out.println("Выбрана текстура: " + selectedTexture);

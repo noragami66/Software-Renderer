@@ -2,6 +2,7 @@ package com.cgvsu.model;
 
 import com.cgvsu.math.Vector2f;
 import com.cgvsu.math.Vector3f;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -12,11 +13,16 @@ public class Model implements Cloneable {
     public ArrayList<Vector3f> normals = new ArrayList<>();
     public ArrayList<Polygon> polygons = new ArrayList<>();
     public String name;
+    private Color color;
+    private String texture;
 
     private boolean verticesVisible = false;
     private boolean polygonMeshEnabled = false;
     private boolean textureEnabled = false;
     private boolean lightingEnabled = false;
+    private boolean usingColor = false;
+    private boolean usingTexture = false;
+
 
     public Model() {
     }
@@ -133,16 +139,40 @@ public class Model implements Cloneable {
         this.polygonMeshEnabled = polygonMeshEnabled;
     }
 
-    public boolean isTextureEnabled() {
-        return textureEnabled;
-    }
-
-    public void setTextureEnabled(boolean textureEnabled) {
-        this.textureEnabled = textureEnabled;
-    }
-
     public boolean isLightingEnabled() {
         return lightingEnabled;
+    }
+
+    public boolean isUsingTexture() {
+        return usingTexture;
+    }
+
+    public void setUsingTexture(boolean usingTexture) {
+        this.usingTexture = usingTexture;
+    }
+
+    public boolean isUsingColor() {
+        return usingColor;
+    }
+
+    public void setUsingColor(boolean usingColor) {
+        this.usingColor = usingColor;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public String getTexture() {
+        return texture;
+    }
+
+    public void setTexture(String texture) {
+        this.texture = texture;
     }
 
     public void setLightingEnabled(boolean lightingEnabled) {

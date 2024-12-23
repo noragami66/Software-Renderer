@@ -36,7 +36,7 @@
                   <content>
                         <VBox prefHeight="2000.0" prefWidth="373.0" style="-fx-background-color: #1f1f1f;">
                             <children>
-                           <TitledPane animated="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Editing" textFill="#46463c" expanded="false">
+                           <TitledPane animated="false" expanded="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Editing" textFill="#46463c">
                               <content>
                                  <AnchorPane minHeight="-Infinity" minWidth="0.0" prefHeight="170.0" prefWidth="347.0">
                                     <children>
@@ -61,7 +61,7 @@
                                  <Font size="19.0" />
                               </font>
                            </TitledPane>
-                                <TitledPane animated="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Models" textFill="#46463c" expanded="false">
+                                <TitledPane animated="false" expanded="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Models" textFill="#46463c">
                                     <content>
                                         <AnchorPane minHeight="-Infinity" minWidth="0.0" prefHeight="120.0" prefWidth="200.0">
                                             <children>
@@ -87,7 +87,7 @@
                                         <Font size="19.0" />
                                     </font>
                                 </TitledPane>
-                           <TitledPane animated="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Cameras" textFill="#46463c" expanded="false">
+                           <TitledPane animated="false" expanded="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Cameras" textFill="#46463c">
                               <content>
                                  <AnchorPane minHeight="-Infinity" minWidth="0.0" prefHeight="270.0" prefWidth="347.0">
                                     <children>
@@ -123,7 +123,7 @@
                                  <Font size="19.0" />
                               </font>
                            </TitledPane>
-                           <TitledPane animated="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Texture Manager" textFill="#46463c" expanded="false">
+                           <TitledPane animated="false" expanded="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Texture Manager" textFill="#46463c">
                               <content>
                                  <AnchorPane minHeight="-Infinity" minWidth="0.0" prefHeight="120.0" prefWidth="347.0">
                                     <children>
@@ -157,7 +157,7 @@
                                  <Font size="19.0" />
                               </font>
                            </TitledPane>
-                           <TitledPane animated="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Lightning" textFill="#46463c" expanded="false">
+                           <TitledPane animated="false" expanded="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Lightning" textFill="#46463c">
                               <content>
                                  <AnchorPane minHeight="-Infinity" minWidth="0.0" prefHeight="170.0" prefWidth="347.0">
                                     <children>
@@ -300,47 +300,6 @@
       </StackPane>
     <VBox fx:id="sidePanel" layoutX="-185.0" layoutY="74.0" prefHeight="740.0" prefWidth="198.0" style="-fx-background-color: #1f1f1f;">
       <children>
-         <VBox prefHeight="214.0" prefWidth="198.0" stylesheets="@textureDark.css">
-            <children>
-               <RadioButton fx:id="textureRadioButton" mnemonicParsing="false" onAction="#applyTextureOrColor" text="Using Texture">
-                  <VBox.margin>
-                     <Insets bottom="5.0" left="5.0" top="5.0" />
-                  </VBox.margin>
-                  <font>
-                     <Font name="System Bold" size="16.0" />
-                  </font>
-               </RadioButton>
-               <RadioButton fx:id="colorRadioButton" mnemonicParsing="false" onAction="#applyTextureOrColor" text="Using color">
-                  <VBox.margin>
-                     <Insets bottom="5.0" left="5.0" top="5.0" />
-                  </VBox.margin>
-                  <font>
-                     <Font name="System Bold" size="16.0" />
-                  </font>
-               </RadioButton>
-               <ColorPicker fx:id="colorPicker" prefHeight="26.0" prefWidth="188.0">
-                  <VBox.margin>
-                     <Insets bottom="5.0" left="5.0" top="5.0" />
-                  </VBox.margin>
-               </ColorPicker>
-               <ComboBox fx:id="textureComboBox" prefHeight="30.0" prefWidth="187.0">
-                  <VBox.margin>
-                     <Insets bottom="5.0" left="5.0" top="5.0" />
-                  </VBox.margin>
-               </ComboBox>
-               <Button alignment="TOP_LEFT" mnemonicParsing="false" onAction="#applyTextureOrColor" prefHeight="0.0" prefWidth="154.0" style="-fx-background-color: #1f1f1f; -fx-border-width: 0;" text="Apply" textFill="#46463c" underline="true">
-                  <font>
-                     <Font size="18.0" />
-                  </font>
-                  <padding>
-                     <Insets left="5.0" right="20.0" />
-                  </padding>
-                  <VBox.margin>
-                     <Insets left="5.0" />
-                  </VBox.margin>
-               </Button>
-            </children>
-         </VBox>
          <VBox fx:id="cameraCoordinatesVBox111" prefHeight="174.0" prefWidth="434.0" style="-fx-background-color: #1f1f1f; -fx-padding: 10; -fx-spacing: 10;">
             <children>
                <Text fill="#46463c" strokeType="OUTSIDE" strokeWidth="0.0" text="Scale" wrappingWidth="115.87109375">
@@ -486,6 +445,36 @@
                      <Insets right="10.0" />
                   </padding>
                </Button>
+            </children>
+         </VBox>
+         <VBox prefHeight="214.0" prefWidth="198.0" stylesheets="@textureDark.css">
+            <children>
+               <RadioButton fx:id="textureRadioButton" mnemonicParsing="false" onAction="#applyTextureOrColor" text="Using Texture">
+                  <VBox.margin>
+                     <Insets bottom="5.0" left="5.0" top="5.0" />
+                  </VBox.margin>
+                  <font>
+                     <Font name="System Bold" size="16.0" />
+                  </font>
+               </RadioButton>
+               <RadioButton fx:id="colorRadioButton" mnemonicParsing="false" onAction="#applyTextureOrColor" text="Using color">
+                  <VBox.margin>
+                     <Insets bottom="5.0" left="5.0" top="5.0" />
+                  </VBox.margin>
+                  <font>
+                     <Font name="System Bold" size="16.0" />
+                  </font>
+               </RadioButton>
+               <ColorPicker fx:id="colorPicker" prefHeight="26.0" prefWidth="188.0" visible="false">
+                  <VBox.margin>
+                     <Insets bottom="5.0" left="5.0" top="5.0" />
+                  </VBox.margin>
+               </ColorPicker>
+               <ComboBox fx:id="textureComboBox" prefHeight="30.0" prefWidth="187.0" visible="false">
+                  <VBox.margin>
+                     <Insets bottom="5.0" left="5.0" top="5.0" />
+                  </VBox.margin>
+               </ComboBox>
             </children>
          </VBox>
       </children></VBox>
