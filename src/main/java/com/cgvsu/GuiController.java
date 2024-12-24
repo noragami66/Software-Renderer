@@ -426,17 +426,6 @@ public class GuiController {
 
 
     /*   <----------------------------БЛОК С ВЕРШИНАМИ----------------------->   */
-    public void handleToggleVerticesAction() {
-        if (selectedModel == null) {
-            showMessage("Модель не выбрана!");
-            toggleVertices.setSelected(false);
-            return;
-        }
-
-        RenderEngine.toggleVerticesVisibility(selectedModel);
-        renderScene();
-    }
-
     private void updateButtonState() {
         if (selectedModel == null) {
             toggleVertices.setSelected(false);
@@ -472,6 +461,17 @@ public class GuiController {
                 colorPicker.setValue(selectedModel.getColor());
             }
         }
+    }
+
+    public void handleToggleVerticesAction() {
+        if (selectedModel == null) {
+            showMessage("Модель не выбрана!");
+            toggleVertices.setSelected(false);
+            return;
+        }
+
+        RenderEngine.toggleVerticesVisibility(selectedModel);
+        renderScene();
     }
 
     private void updateVertexList() {

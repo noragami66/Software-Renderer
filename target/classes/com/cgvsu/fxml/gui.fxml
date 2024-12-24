@@ -34,7 +34,7 @@
             <right>
                <ScrollPane hbarPolicy="NEVER" style="-fx-background-color: #1d1d1d;" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
                   <content>
-                        <VBox prefHeight="2000.0" prefWidth="373.0" style="-fx-background-color: #1f1f1f;">
+                        <VBox fx:id="sideBox" prefHeight="2000.0" prefWidth="373.0" style="-fx-background-color: #1f1f1f; ">
                             <children>
                            <TitledPane animated="false" expanded="false" prefWidth="373.0" stylesheets="@titledPane.css" text="Editing" textFill="#46463c">
                               <content>
@@ -197,7 +197,7 @@
                </ScrollPane>
             </right>
             <top>
-               <Pane fx:id="topMenuPane" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="35.0" prefWidth="1304.0" style="-fx-background-color: #1D1D1D;" BorderPane.alignment="CENTER">
+               <Pane fx:id="topMenuPane" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="35.0" prefWidth="1304.0" style="-fx-background-color: #1D1D1D; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 15, 0, 0, -3);" BorderPane.alignment="CENTER">
                   <children>
                           <MenuBar fx:id="topMenuBar" prefHeight="35.0" prefWidth="1600.0" style="-fx-background-color: #1D1D1D;" stylesheets="@menuStyleDark.css">
                               <Menu mnemonicParsing="false" text="File">
@@ -271,22 +271,25 @@
                 <BorderPane fx:id="objectBorderPane" onDragDropped="#handleDropObj" onDragEntered="#handleDragEnteredObj" onDragExited="#handleDragExitedObj" onDragOver="#handleDragOverObj" prefHeight="778.0" prefWidth="1225.0" />
             </center>
             <bottom>
-               <Pane prefHeight="42.0" prefWidth="1227.0" style="-fx-background-color: #1f1f1f; -fx-border-color: #1D1D1D;" BorderPane.alignment="CENTER">
+               <Pane fx:id="bottomPane" prefHeight="42.0" prefWidth="1227.0" style="-fx-background-color: #1f1f1f; -fx-border-color: #1D1D1D; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 15, 0, 0, 5);" BorderPane.alignment="CENTER">
                   <opaqueInsets>
                      <Insets right="100.0" />
                   </opaqueInsets>
                   <children>
                      <HBox layoutX="14.0" layoutY="3.0" prefHeight="34.0" prefWidth="608.0" stylesheets="@buttonDark.css">
                         <children>
-                           <ToggleButton fx:id="togglePolygonMesh" mnemonicParsing="false" stylesheets="@buttonDark.css" text="Draw polygonal mesh">
+                           <ToggleButton fx:id="togglePolygonMesh" mnemonicParsing="false" prefWidth="123.0" stylesheets="@buttonDark.css" text="Polygonal mesh">
                               <HBox.margin>
-                                 <Insets right="10.0" />
+                                 <Insets right="10.0" top="2.0" />
                               </HBox.margin>
                            </ToggleButton>
-                           <ToggleButton fx:id="toggleUseLighting" mnemonicParsing="false" text="Use lighting" />
-                           <ToggleButton fx:id="toggleVertices" mnemonicParsing="false" stylesheets="@buttonDark.css" text="Vertices">
+                           <ToggleButton fx:id="toggleUseLighting" mnemonicParsing="false" prefWidth="123.0" text="Lighting">
                               <HBox.margin>
-                                 <Insets left="5.0" />
+                                 <Insets top="2.0" />
+                              </HBox.margin></ToggleButton>
+                           <ToggleButton fx:id="toggleVertices" mnemonicParsing="false" prefWidth="123.0" stylesheets="@buttonDark.css" text="Vertices">
+                              <HBox.margin>
+                                 <Insets left="5.0" top="2.0" />
                               </HBox.margin>
                            </ToggleButton>
                         </children>

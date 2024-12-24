@@ -1,0 +1,8 @@
+@font-face {
+    font-family: 'MyriadPro';
+    src: url('src/main/resources/com/cgvsu/fxml/MYRIADPRO-REGULAR.OTF');
+}
+
+.root {
+    -fx-font-family: 'MyriadPro';
+}
