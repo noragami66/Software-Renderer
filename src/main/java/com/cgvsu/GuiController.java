@@ -20,10 +20,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.effect.GaussianBlur;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.TransferMode;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -36,6 +33,7 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.vecmath.Vector3f;
 
@@ -43,8 +41,7 @@ import com.cgvsu.model.Model;
 import com.cgvsu.render_engine.Camera;
 
 import static com.cgvsu.SceneTools.*;
-import static com.cgvsu.render_engine.RenderEngine.resetSelectedVertices;
-import static com.cgvsu.render_engine.RenderEngine.selectedVertexIndices;
+import static com.cgvsu.render_engine.RenderEngine.*;
 
 public class GuiController {
     final private float TRANSLATION = 0.5F;
@@ -210,9 +207,15 @@ public class GuiController {
         colorPicker.setOnAction(e -> {
             applyTextureOrColor();
         });
-
-        vertexListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> handleVertexSelection());
+        vertexListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        vertexListView.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.SPACE) {
+                handleVertexSelection();
+                event.consume();
+            }
+        });
         toggleVertices.setOnAction(event -> handleToggleVerticesAction());
+
         cameras = FXCollections.observableArrayList();
         camerasListView.setItems((ObservableList<Camera>) cameras);
 
@@ -426,6 +429,32 @@ public class GuiController {
 
 
     /*   <----------------------------БЛОК С ВЕРШИНАМИ----------------------->   */
+
+    private void renderScene() {
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+        double canvasWidth = canvas.getWidth();
+        double canvasHeight = canvas.getHeight();
+        mainCamera.setAspectRatio((float) (canvasWidth / canvasHeight));
+
+        for (Model model : models) {
+            RenderEngine.render(gc,mainCamera, model, (int) canvasWidth, (int) canvasHeight);
+        }
+    }
+
+    public void handleToggleVerticesAction() {
+        if (selectedModel == null) {
+            showMessage("Модель не выбрана!");
+            toggleVertices.setSelected(false);
+            return;
+        }
+
+        RenderEngine.toggleVerticesVisibility(selectedModel);
+        renderScene();
+    }
+
     private void updateButtonState() {
         if (selectedModel == null) {
             toggleVertices.setSelected(false);
@@ -463,15 +492,23 @@ public class GuiController {
         }
     }
 
-    public void handleToggleVerticesAction() {
+    @FXML
+    private void handleDeleteVertices() {
         if (selectedModel == null) {
             showMessage("Модель не выбрана!");
-            toggleVertices.setSelected(false);
             return;
         }
-
-        RenderEngine.toggleVerticesVisibility(selectedModel);
+        deleteSelectedVertices(selectedModel);
+        updateVertexList();
         renderScene();
+    }
+
+    @FXML
+    private void handleVertexSelection() {
+        ObservableList<Integer> selectedIndices = vertexListView.getSelectionModel().getSelectedIndices();
+        selectedVertexIndices.clear();
+        selectedVertexIndices.addAll(selectedIndices);
+        updateVertexList();
     }
 
     private void updateVertexList() {
@@ -485,43 +522,6 @@ public class GuiController {
         }
 
         vertexListView.setCellFactory(param -> new VertexListCell());
-    }
-
-    @FXML
-    private void handleVertexSelection() {
-        int selectedIndex = vertexListView.getSelectionModel().getSelectedIndex();
-
-        if (selectedIndex >= 0 && selectedModel != null) {
-            RenderEngine.setSelectedVertexIndex(selectedIndex);
-            renderScene();
-        }
-    }
-
-    private void renderScene() {
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
-        double canvasWidth = canvas.getWidth();
-        double canvasHeight = canvas.getHeight();
-        mainCamera.setAspectRatio((float) (canvasWidth / canvasHeight));
-
-        for (Model model : models) {
-            RenderEngine.render(gc,mainCamera, model, (int) canvasWidth, (int) canvasHeight);
-        }
-    }
-
-    @FXML
-    private void handleDeleteVertices() {
-        if (selectedCamera == null) {
-            showMessage("В программе могут возникнуть ошибки при рендере, выберите камеру!");
-            return;
-        }
-        if (selectedModel != null) {
-            RenderEngine.deleteSelectedVertices(selectedModel);
-            updateVertexList();
-            renderScene();
-        }
     }
 
     public class VertexListCell extends ListCell<String> {

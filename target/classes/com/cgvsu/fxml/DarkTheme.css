@@ -40,9 +40,6 @@
   -fx-padding: 3px;
   -fx-background-color: #1d1d1d;
 }
-.list-view .list-cell:hover {
-  -fx-background-color: #46463c;
-}
 .list-view .list-cell:selected {
   -fx-background-color: #46463c;
 }
