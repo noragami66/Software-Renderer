@@ -33,8 +33,9 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.vecmath.Vector3f;
 
 import com.cgvsu.model.Model;
@@ -127,6 +128,26 @@ public class GuiController {
     @FXML
     private ColorPicker colorPicker;
 
+    @FXML
+    private VBox sideBox;
+
+    @FXML
+    private TitledPane selectedTitledPane;
+
+    @FXML
+    private TitledPane editingTitledPane;
+
+    @FXML
+    private TitledPane modelsTitledPane;
+
+    @FXML
+    private TitledPane camerasTitledPane;
+
+    @FXML
+    private TitledPane textureTitledPane;
+
+    @FXML
+    private TitledPane lightningTitledPane;
 
     private boolean isDarkTheme = true;
 
@@ -182,6 +203,7 @@ public class GuiController {
         colorRadioButton.setSelected(true);
         colorPicker.setVisible(true);
         textureComboBox.setVisible(false);
+        textureComboBox.getItems().add("default");
 
         textureRadioButton.setOnAction(e -> {
             if (!textureRadioButton.isSelected()) {
@@ -199,10 +221,21 @@ public class GuiController {
 
         textureComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                chooseTexture(newValue);
-                applyTextureOrColor();
+                if ("default".equals(   newValue)) {
+                    showMessage("Текстура по умолчанию выбрана"); // опасная заглушка
+                    textureRadioButton.setSelected(false);
+                    colorRadioButton.setSelected(true);
+                    colorPicker.setVisible(true);
+                    textureComboBox.setVisible(false);
+                    selectedModel.setUsingColor(true);
+                    selectedModel.setUsingTexture(false);
+                } else {
+                    chooseTexture(newValue);
+                    applyTextureOrColor();
+                }
             }
         });
+
 
         colorPicker.setOnAction(e -> {
             applyTextureOrColor();
@@ -280,12 +313,6 @@ public class GuiController {
             return cell;
         });
 
-        textureComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                chooseTexture(newValue);
-            }
-        });
-
         modelListView.setCellFactory(param -> new ListCell<Model>() {
             @Override
             protected void updateItem(Model model, boolean empty) {
@@ -343,11 +370,130 @@ public class GuiController {
                             }
                         }
                     });
-
                 }
             }
         });
     }
+    /*   <----------------------------БЛОК ВЫНОСА----------------------->   */
+
+    public void setSelectionEditingPane() {
+            selectedTitledPane = editingTitledPane;
+            System.out.println("Selected TitledPane: " + editingTitledPane.getText());
+            handleMouseDraggedEditingPane();
+    }
+
+    public void setSelectionModelsPane() {
+        selectedTitledPane = modelsTitledPane;
+        System.out.println("Selected TitledPane: " + modelsTitledPane.getText());
+        handleMouseDraggedEditingPane();
+    }
+
+    public void setSelectionCamerasPane() {
+        selectedTitledPane = camerasTitledPane;
+        System.out.println("Selected TitledPane: " + camerasTitledPane.getText());
+        handleMouseDraggedEditingPane();
+    }
+
+    public void setSelectionTexturesPane() {
+        selectedTitledPane = textureTitledPane;
+        System.out.println("Selected TitledPane: " + textureTitledPane.getText());
+        handleMouseDraggedEditingPane();
+    }
+
+    public void setSelectionLightningPane() {
+        selectedTitledPane = lightningTitledPane;
+        System.out.println("Selected TitledPane: " + lightningTitledPane.getText());
+        handleMouseDraggedEditingPane();
+    }
+
+        public void handleMouseDraggedEditingPane() {
+        if (selectedTitledPane != null) {
+            createNewWindowWithTitledPane(selectedTitledPane, isDarkTheme);
+        } else {
+            System.out.println("No TitledPane is selected!");
+        }
+    }
+
+    @FXML
+    private ScrollPane sideBoxScrollPane;
+    private Set<TitledPane> openedTitledPanes = new HashSet<>();
+
+    private void createNewWindowWithTitledPane(TitledPane selectedTitledPane, boolean isDarkTheme) {
+        if (openedTitledPanes.contains(selectedTitledPane)) {
+            return;
+        }
+        openedTitledPanes.add(selectedTitledPane);
+        Stage editingWindow = new Stage();
+        editingWindow.initStyle(StageStyle.TRANSPARENT);
+        int originalIndex = sideBox.getChildren().indexOf(selectedTitledPane);
+        sideBox.getChildren().remove(selectedTitledPane);
+        if (sideBox.getChildren().isEmpty()) {
+            sideBoxScrollPane.setVisible(false);
+        }
+        HBox container = new HBox();
+        Button returnButton = new Button("Back");
+        returnButton.setMinWidth(75);
+        selectedTitledPane.setExpanded(true);
+        container.getChildren().addAll(returnButton, selectedTitledPane);
+        Scene scene = new Scene(container);
+        scene.getRoot().setStyle("-fx-background-color: transparent;");
+        scene.getRoot().setStyle("-fx-background-color: #1d1d1d;");
+        returnButton.setStyle("-fx-background-color: #46463c; -fx-text-fill: white;");
+        editingWindow.setScene(scene);
+
+        double width = selectedTitledPane.getMaxWidth() + 75;
+        double height = selectedTitledPane.getMaxHeight();
+
+        editingWindow.setWidth(width);
+        editingWindow.setHeight(height);
+        returnButton.setOnAction(event -> {
+            container.getChildren().remove(returnButton);
+            if (originalIndex >= 0 && originalIndex < sideBox.getChildren().size()) {
+                sideBox.getChildren().add(originalIndex, selectedTitledPane);
+            } else {
+                sideBox.getChildren().add(selectedTitledPane);
+            }
+            if (!sideBox.getChildren().isEmpty()) {
+                sideBoxScrollPane.setVisible(true);
+            }
+
+            selectedTitledPane.setVisible(true);
+            editingWindow.close();
+
+            openedTitledPanes.remove(selectedTitledPane);
+        });
+
+        final double[] mouseX = {0};
+        final double[] mouseY = {0};
+        scene.setOnMousePressed(event -> {
+            mouseX[0] = event.getScreenX() - editingWindow.getX();
+            mouseY[0] = event.getScreenY() - editingWindow.getY();
+        });
+
+        scene.setOnMouseDragged(event -> {
+            editingWindow.setX(event.getScreenX() - mouseX[0]);
+            editingWindow.setY(event.getScreenY() - mouseY[0]);
+        });
+
+        editingWindow.setOnCloseRequest(event -> {
+            container.getChildren().remove(returnButton);
+            if (originalIndex >= 0 && originalIndex < sideBox.getChildren().size()) {
+                sideBox.getChildren().add(originalIndex, selectedTitledPane);
+            } else {
+                sideBox.getChildren().add(selectedTitledPane);
+            }
+            if (!sideBox.getChildren().isEmpty()) {
+                sideBoxScrollPane.setVisible(true);
+            }
+
+            selectedTitledPane.setVisible(true);
+
+            openedTitledPanes.remove(selectedTitledPane);
+        });
+        editingWindow.show();
+    }
+    /*   <----------------------------БЛОК ВЫНОСА----------------------->   */
+
 
     /*   <----------------------------DRAG AND DROP----------------------->   */
     @FXML
@@ -506,8 +652,14 @@ public class GuiController {
     @FXML
     private void handleVertexSelection() {
         ObservableList<Integer> selectedIndices = vertexListView.getSelectionModel().getSelectedIndices();
-        selectedVertexIndices.clear();
-        selectedVertexIndices.addAll(selectedIndices);
+
+        for (Integer index : selectedIndices) {
+            if (selectedVertexIndices.contains(index)) {
+                selectedVertexIndices.remove(index);
+            } else {
+                selectedVertexIndices.add(index);
+            }
+        }
         updateVertexList();
     }
 
