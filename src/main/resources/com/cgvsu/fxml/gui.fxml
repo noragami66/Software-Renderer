@@ -28,7 +28,7 @@
 <?import javafx.scene.text.Text?>
 
 <AnchorPane fx:id="anchorPane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
-      <StackPane style="-fx-background-color: #1a1919;">
+      <StackPane fx:id="myStackPane" style="-fx-background-color: #1a1919;">
       <children>
               <Canvas fx:id="canvas" height="870" width="1600" />
           <BorderPane prefHeight="870.0" prefWidth="1600.0">
@@ -197,7 +197,7 @@
                </ScrollPane>
             </right>
             <top>
-               <Pane fx:id="topMenuPane" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="35.0" prefWidth="1304.0" style="-fx-background-color: #1D1D1D; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 15, 0, 0, -3);" BorderPane.alignment="CENTER">
+               <Pane fx:id="topMenuPane" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="35.0" prefWidth="1304.0" BorderPane.alignment="CENTER">
                   <children>
                           <MenuBar fx:id="topMenuBar" prefHeight="35.0" prefWidth="1600.0" style="-fx-background-color: #1D1D1D;" stylesheets="@menuStyleDark.css">
                               <Menu mnemonicParsing="false" text="File">

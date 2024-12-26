@@ -442,6 +442,11 @@ public class GuiController {
         selectedTitledPane.setExpanded(true);
         container.getChildren().addAll(returnButton, selectedTitledPane);
         Scene scene = new Scene(container);
+        if (!isDarkTheme){
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/cgvsu/fxml/LightTheme.css")).toExternalForm());
+        }else{
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/cgvsu/fxml/DarkTheme.css")).toExternalForm());
+        }
         scene.getRoot().setStyle("-fx-background-color: transparent;");
         scene.getRoot().setStyle("-fx-background-color: #1d1d1d;");
         returnButton.setStyle("-fx-background-color: #46463c; -fx-text-fill: white;");
@@ -662,14 +667,16 @@ public class GuiController {
             }
         }
 
-        vertexListView.setCellFactory(param -> new VertexListCell());
+        vertexListView.setCellFactory(param -> new VertexListCell(isDarkTheme));
     }
 
     public class VertexListCell extends ListCell<String> {
         private final CheckBox checkBox;
         private final Text vertexText;
+        private boolean isDarkTheme;
 
-        public VertexListCell() {
+        public VertexListCell(boolean isDarkTheme) {
+            this.isDarkTheme = isDarkTheme;
             HBox hbox = new HBox(10);
             vertexText = new Text();
             checkBox = new CheckBox();
@@ -685,7 +692,8 @@ public class GuiController {
                 setGraphic(null);
             } else {
                 vertexText.setText(item);
-                vertexText.setFill(Color.WHITE);
+                vertexText.setFill(isDarkTheme ? Color.WHITE : Color.BLACK);
+
                 int index = getIndex();
 
                 checkBox.setSelected(selectedVertexIndices.contains(index));
@@ -712,6 +720,7 @@ public class GuiController {
             updateVertexList();
         }
     }
+
     /*   <----------------------------БЛОК С ВЕРШИНАМИ----------------------->   */
 
 
@@ -962,7 +971,8 @@ public class GuiController {
 
         clearStyles(anchorPane);
         anchorPane.getStylesheets().clear();
-        anchorPane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/cgvsu/fxml/lightTheme.css")).toExternalForm());
+        anchorPane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/cgvsu/fxml/LightTheme.css")).toExternalForm());
+        updateVertexList();
     }
 
     private void clearStyles(Parent parent) {
@@ -985,6 +995,7 @@ public class GuiController {
         clearStyles(anchorPane);
         anchorPane.getStylesheets().clear();
         anchorPane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/cgvsu/fxml/DarkTheme.css")).toExternalForm());
+        updateVertexList();
     }
     /*   <----------------------------БЛОК ТЕМЫ----------------------->   */
 
@@ -1050,7 +1061,7 @@ public class GuiController {
         if (isDarkTheme) {
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/cgvsu/fxml/DarkTheme.css")).toExternalForm());
         } else {
-            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/cgvsu/fxml/lightTheme.css")).toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/cgvsu/fxml/LightTheme.css")).toExternalForm());
         }
         editStage.setScene(scene);
 
@@ -1115,7 +1126,7 @@ public class GuiController {
             String textureName = SceneTools.addTexture(file.getName());
             textureComboBox.getItems().add(textureName);
 
-            HBox textureRow = createTextureRow(textureName, file.getName());
+            HBox textureRow = createTextureRow(textureName, file.getName(),isDarkTheme);
             textureListVBox.getChildren().add(textureRow);
 
         } catch (IllegalArgumentException e) {
@@ -1123,12 +1134,16 @@ public class GuiController {
         }
     }
 
-    private HBox createTextureRow(String textureName, String texturePath) {
+    private HBox createTextureRow(String textureName, String texturePath, boolean isDarkTheme) {
         HBox textureRow = new HBox(15);
         textureRow.setAlignment(Pos.CENTER_LEFT);
 
         Label textureLabel = new Label(textureName);
-        textureLabel.setStyle("-fx-text-fill: white;");
+        if (isDarkTheme) {
+            textureLabel.setStyle("-fx-text-fill: white;");
+        } else {
+            textureLabel.setStyle("-fx-text-fill: black;");
+        }
 
         HBox buttonBox = new HBox(10);
         buttonBox.setAlignment(Pos.CENTER_RIGHT);

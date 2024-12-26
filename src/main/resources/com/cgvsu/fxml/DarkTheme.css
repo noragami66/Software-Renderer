@@ -1,6 +1,6 @@
 .toggle-button {
     -fx-border-color: #46463c;
-    -fx-border-width: 2px;
+    -fx-border-width: 1px;
     -fx-text-fill: #46463c;
     -fx-background-color: #1f1f1f;
     -fx-font-size: 14px;
@@ -14,21 +14,11 @@
     -fx-background-color: #46463c;
 }
 
-.toggle-button:hover {
-    -fx-border-color: #5a5a52;
-    -fx-background-color: #292929;
-    -fx-text-fill: #46463c;
-}
-
 .toggle-button:pressed {
     -fx-background-color: #3a3a3a;
     -fx-text-fill: #1f1f1f;
 }
 
-.toggle-button:selected:hover {
-    -fx-background-color: #5c5c5c;
-    -fx-text-fill: #1f1f1f;
-}
 
 .list-view {
   -fx-background-color: #1d1d1d;
@@ -94,7 +84,7 @@
 }
 
 .vbox {
-    -fx-background-color: #2b2b2b;
+    -fx-background-color:  #1f1f1f;
     -fx-spacing: 10;
 }
 
@@ -108,16 +98,10 @@
     -fx-margin-left: 20px;
 }
 
-.label {
-    -fx-text-fill: white;
-}
-
 .button {
-    -fx-background-color: transparent;
+    -fx-background-color: #1f1f1f;
     -fx-text-fill: #46463c;
-    -fx-border-color: #46463c;
-    -fx-border-width: 1;
-    -fx-border-radius: 3;
+    -fx-border-width: 0;
 }
 
 .hbox .buttonBox {
@@ -142,7 +126,6 @@
 
 .scroll-pane .scroll-bar .increment-button,
 .scroll-pane .scroll-bar .decrement-button {
-    -fx-background-color: #1e1e1e;
     -fx-background-radius: 0;
     -fx-padding: 4;
 }
@@ -195,15 +178,6 @@
 }
 
 
-.radio-button {
-    -fx-text-fill: #46463c;
-    -fx-background-color: #1D1D1D;
-    -fx-font-size: 14px;
-    -fx-padding: 5px 10px;
-    -fx-alignment: center-left;
-    -fx-focus-color: transparent;
-}
-
 .color-picker {
     -fx-background-color:  #1D1D1D;
         -fx-font-size: 12px;
@@ -251,9 +225,6 @@
     -fx-focus-color: transparent;
 }
 
-/* Дополнительные стили для темной темы */
-
-/* Toggle Switch */
 .toggle-switch {
     -fx-background-color: #1f1f1f;
     -fx-border-color: #46463c;
@@ -269,7 +240,6 @@
     -fx-thumb: #1f1f1f;
 }
 
-/* TabPane */
 .tab-pane {
     -fx-background-color: #1f1f1f;
     -fx-border-color: #46463c;
@@ -291,36 +261,21 @@
 
 .root {
     -fx-background-color: #1f1f1f;
-    -fx-text-fill: #ffffff;
 }
 
-.label, .text {
-    -fx-text-fill: #ffffff;
-}
 
 .anchor-pane, .pane, .vbox, .hbox {
     -fx-background-color: #1f1f1f;
 }
 
 .button {
-    -fx-text-fill: #ffffff;
-    -fx-background-color: #2b2b2b;
+    -fx-background-color:  #1f1f1f;
     -fx-border-color: #46463c;
-}
-
-.button:hover {
-    -fx-background-color: #46463c;
-    -fx-text-fill: #1f1f1f;
 }
 
 .text-field {
     -fx-background-color: #2b2b2b;
     -fx-text-fill: #ffffff;
-    -fx-border-color: #46463c;
-}
-
-.text-field:focused {
-    -fx-border-color: #ffffff;
 }
 
 .list-view {
@@ -342,8 +297,6 @@
     -fx-background-color: #1f1f1f;
     -fx-text-fill: #ffffff;
     -fx-font-size: 14px;
-    -fx-border-color: #46463c;
-    -fx-border-width: 1px;
 }
 
 .context-menu .menu-item {
@@ -361,3 +314,177 @@
     -fx-background-color: #5a5a5a;
     -fx-text-fill: #ffffff;
 }
+
+#myStackPane {
+    -fx-background-color: #1a1919;
+}
+
+#topMenuPane {
+    -fx-background-color: #1D1D1D;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 15, 0, 0, -3);
+}
+
+#bottomPane {
+    -fx-background-color:  #1f1f1f;
+    -fx-border-color:  #1D1D1D;
+    -fx-effect:  dropshadow(gaussian, rgba(0,0,0,0.5), 15, 0, 0, 5);
+}
+
+#sidePanel {
+    -fx-background-color: #1f1f1f;
+}
+
+#sidePanel > VBox {
+    -fx-background-color: #1f1f1f;
+    -fx-padding: 10;
+    -fx-spacing: 10;
+}
+
+#sidePanel > VBox Text {
+    -fx-fill: #46463c;
+    -fx-font-size: 20.0;
+}
+
+#sidePanel > VBox HBox Text {
+    -fx-fill: WHITE;
+     -fx-font-size: 12.0;
+}
+
+#sidePanel > VBox HBox TextField {
+    -fx-background-color: #2f2f2f;
+    -fx-text-fill: #46463c;
+}
+
+#sidePanel > VBox Button {
+    -fx-background-color: #1f1f1f;
+    -fx-border-width: 0;
+    -fx-text-fill: #46463c;
+    -fx-font-size: 18.0;
+    -fx-underline: true;
+}
+
+#sidePanel > VBox RadioButton {
+ -fx-text-fill: #46463c;
+    -fx-background-color: transparent;
+    -fx-font-size: 14px;
+    -fx-padding: 0;
+    -fx-alignment: center-left;
+    -fx-focus-color: transparent;
+    -fx-border-width: 0;
+    -fx-margin: 0;
+}
+
+#sidePanel > VBox #colorPicker {
+    -fx-pref-height: 26.0;
+    -fx-pref-width: 188.0;
+}
+
+#sidePanel > VBox #textureComboBox {
+    -fx-pref-height: 30.0;
+    -fx-pref-width: 187.0;
+}
+
+#sidePanel > VBox HBox {
+    -fx-background-color: #1f1f1f;
+    -fx-spacing: 10;
+}
+
+#camerasTitledPane {
+    -fx-background-color: #1f1f1f;
+    -fx-text-fill: #46463c;
+}
+
+#camerasTitledPane .title {
+    -fx-text-fill: #46463c;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-font-size: 19px;
+    -fx-padding: 5px 10px;
+}
+
+#camerasTitledPane .title .arrow {
+    -fx-background-color: #46463c;
+}
+
+#camerasTitledPane .title .arrow:hover {
+    -fx-background-color: #46463c;
+}
+
+#camerasTitledPane .content {
+    -fx-background-color: #1f1f1f;
+    -fx-padding: 10px;
+}
+
+#cameraCoordinatesVBox11 {
+    -fx-background-color: #1f1f1f;
+    -fx-padding: 10px;
+    -fx-spacing: 10px;
+}
+
+#cameraCoordinatesVBox11 .button {
+    -fx-background-color: #1f1f1f;
+    -fx-text-fill: #46463c;
+    -fx-font-size: 18px;
+    -fx-underline: true;
+    -fx-padding: 10px;
+}
+
+#cameraCoordinatesVBox11 .text-field {
+    -fx-background-color: #2f2f2f;
+    -fx-text-fill: #46463c;
+    -fx-font-size: 14px;
+}
+
+#cameraCoordinatesVBox11 .list-view {
+    -fx-background-color: #1f1f1f;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+}
+
+#cameraCoordinatesVBox11 .list-view .list-cell {
+    -fx-text-fill: white;
+    -fx-background-color: #1f1f1f;
+}
+
+#cameraCoordinatesVBox11 .list-view .list-cell:selected {
+    -fx-background-color: #46463c;
+}
+
+#cameraCoordinatesVBox11 .button {
+    -fx-background-color: #1f1f1f;
+    -fx-text-fill: #46463c;
+    -fx-border-width: 0;
+    -fx-font-size: 18px;
+    -fx-underline: true;
+}
+
+#cameraCoordinatesVBox11 HBox {
+    -fx-spacing: 10px;
+    -fx-background-color: #1f1f1f;
+}
+
+#cameraCoordinatesVBox11 HBox TextField {
+    -fx-background-color: #2f2f2f;
+    -fx-text-fill: #46463c;
+    -fx-font-size: 14px;
+}
+
+#cameraCoordinatesVBox11 HBox TextField:focused {
+    -fx-text-fill: #C09D7D;
+}
+
+#camerasListView {
+    -fx-background-color: #1f1f1f;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+}
+
+#camerasListView .list-cell {
+    -fx-text-fill: white;
+    -fx-background-color: #1f1f1f;
+}
+
+#camerasListView .list-cell:selected {
+    -fx-background-color: #46463c;
+}
+
