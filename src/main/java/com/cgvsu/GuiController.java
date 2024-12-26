@@ -10,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -32,10 +31,7 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import javax.vecmath.Vector3f;
 
 import com.cgvsu.model.Model;
@@ -149,14 +145,17 @@ public class GuiController {
     @FXML
     private TitledPane lightningTitledPane;
 
+    @FXML
+    private ScrollPane sideBoxScrollPane;
+
+    private final Set<TitledPane> openedTitledPanes = new HashSet<>();
+
     private boolean isDarkTheme = true;
 
     private Camera mainCamera = new Camera(
-            new Vector3f(0, 00, 200),
+            new Vector3f(0, 0, 200),
             new Vector3f(0, 0, 0),
             1.0F, 1, 0.01F, 200);
-
-    private Timeline timeline;
 
     //init
     //INIT
@@ -168,7 +167,7 @@ public class GuiController {
         anchorPane.prefWidthProperty().addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue()));
         anchorPane.prefHeightProperty().addListener((ov, oldValue, newValue) -> canvas.setHeight(newValue.doubleValue()));
 
-        timeline = new Timeline();
+        Timeline timeline = new Timeline();
         timeline.setCycleCount(Animation.INDEFINITE);
 
         KeyFrame frame = new KeyFrame(Duration.millis(15), event -> {
@@ -237,9 +236,7 @@ public class GuiController {
         });
 
 
-        colorPicker.setOnAction(e -> {
-            applyTextureOrColor();
-        });
+        colorPicker.setOnAction(e -> applyTextureOrColor());
         vertexListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         vertexListView.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.SPACE) {
@@ -313,7 +310,7 @@ public class GuiController {
             return cell;
         });
 
-        modelListView.setCellFactory(param -> new ListCell<Model>() {
+        modelListView.setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(Model model, boolean empty) {
                 super.updateItem(model, empty);
@@ -341,8 +338,7 @@ public class GuiController {
                         contextMenu.setStyle("");
                         contextMenu.setStyle("-fx-background-color: #2f2f2f; -fx-text-fill: white; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;");
                         deleteItem.setStyle("-fx-text-fill: white; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;");
-                    }
-                    else {
+                    } else {
                         contextMenu.setStyle("");
                         deleteItem.setStyle("");
                         contextMenu.setStyle("-fx-background-color: white; -fx-text-fill: black;");
@@ -407,22 +403,16 @@ public class GuiController {
 
         public void handleMouseDraggedEditingPane() {
         if (selectedTitledPane != null) {
-            createNewWindowWithTitledPane(selectedTitledPane, isDarkTheme);
+            createNewWindowWithTitledPane(selectedTitledPane);
         } else {
             System.out.println("No TitledPane is selected!");
         }
     }
 
-    @FXML
-    private ScrollPane sideBoxScrollPane;
-    private Set<TitledPane> openedTitledPanes = new HashSet<>();
-
     private void slideOutSideBoxScrollPane() {
         TranslateTransition slideOut = new TranslateTransition(Duration.millis(250), sideBoxScrollPane);
         slideOut.setToX(sideBoxScrollPane.getWidth());
-        slideOut.setOnFinished(event -> {
-            sideBoxScrollPane.setVisible(false);
-        });
+        slideOut.setOnFinished(event -> sideBoxScrollPane.setVisible(false));
         slideOut.play();
     }
 
@@ -434,7 +424,7 @@ public class GuiController {
     }
 
 
-    private void createNewWindowWithTitledPane(TitledPane selectedTitledPane, boolean isDarkTheme) {
+    private void createNewWindowWithTitledPane(TitledPane selectedTitledPane) {
         if (openedTitledPanes.contains(selectedTitledPane)) {
             return;
         }
@@ -525,19 +515,17 @@ public class GuiController {
     public void handleDragEnteredObj(DragEvent event) {
         if (event.getGestureSource() != objectBorderPane && event.getDragboard().hasFiles()) {
             objectBorderPane.setStyle("-fx-background-color: #46463c; -fx-opacity: 0.25");
-            applyBackgroundAndBlurEffect(true,true);
+            applyBackgroundAndBlurEffect(true);
         }
         event.consume();
     }
 
-    private void applyBackgroundAndBlurEffect(boolean apply, boolean animateOpacity) {
+    private void applyBackgroundAndBlurEffect(boolean apply) {
         Timeline timeline = new Timeline();
 
         GaussianBlur blur = new GaussianBlur();
         KeyFrame blurKeyFrame = new KeyFrame(Duration.millis(150),
                 new javafx.animation.KeyValue(blur.radiusProperty(), apply ? 15 : 0));
-
-        if (animateOpacity) {
             if (apply) {
                 objectBorderPane.setOpacity(0);
             } else {
@@ -546,9 +534,6 @@ public class GuiController {
             KeyFrame opacityKeyFrame = new KeyFrame(Duration.millis(150),
                     new javafx.animation.KeyValue(objectBorderPane.opacityProperty(), apply ? 0.25 : 0));
             timeline.getKeyFrames().add(opacityKeyFrame);
-        } else if (!apply) {
-            objectBorderPane.setStyle("-fx-background-color: transparent;");
-        }
 
         timeline.getKeyFrames().add(blurKeyFrame);
 
@@ -558,7 +543,7 @@ public class GuiController {
     }
 
     public void handleDragExitedObj(DragEvent event) {
-        applyBackgroundAndBlurEffect(false,true);
+        applyBackgroundAndBlurEffect(false);
         event.consume();
     }
 
@@ -623,21 +608,9 @@ public class GuiController {
             toggleUseLighting.setSelected(false);
             togglePolygonMesh.setSelected(false);
         } else {
-            if (selectedModel.isVerticesVisible()){
-                toggleVertices.setSelected(true);
-            }else {
-                toggleVertices.setSelected(false);
-            }
-            if (selectedModel.isLightingEnabled()){
-                toggleUseLighting.setSelected(true);
-            }else {
-                toggleUseLighting.setSelected(false);
-            }
-            if (selectedModel.isPolygonMeshEnabled()){
-                togglePolygonMesh.setSelected(true);
-            }else {
-                togglePolygonMesh.setSelected(false);
-            }
+            toggleVertices.setSelected(selectedModel.isVerticesVisible());
+            toggleUseLighting.setSelected(selectedModel.isLightingEnabled());
+            togglePolygonMesh.setSelected(selectedModel.isPolygonMeshEnabled());
             if (selectedModel.isUsingTexture()) {
                 textureRadioButton.setSelected(true);
                 textureComboBox.setVisible(true);
@@ -693,8 +666,8 @@ public class GuiController {
     }
 
     public class VertexListCell extends ListCell<String> {
-        private CheckBox checkBox;
-        private Text vertexText;
+        private final CheckBox checkBox;
+        private final Text vertexText;
 
         public VertexListCell() {
             HBox hbox = new HBox(10);
@@ -837,7 +810,7 @@ public class GuiController {
         StackPane.setAlignment(closeButton, Pos.BOTTOM_CENTER);
 
         Scene scene = new Scene(root, 800, 100);
-        scene.getStylesheets().add(getClass().getResource("/com/cgvsu/fxml/showBox.css").toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/cgvsu/fxml/showBox.css")).toExternalForm());
         errorStage.setScene(scene);
 
         errorStage.show();
@@ -904,7 +877,7 @@ public class GuiController {
 
     /*   <----------------------------БЛОК СВЕТА----------------------->   */
     @FXML
-    private void onAddLightSourceClick(ActionEvent event) {
+    private void onAddLightSourceClick() {
         LightSource newLight = SceneTools.createLightSource(0, 10, 0);
         lightSources.add(newLight);
 
@@ -978,7 +951,7 @@ public class GuiController {
 
 
     /*   <----------------------------БЛОК ТЕМЫ----------------------->   */
-    private List<String> originalStylesheets = new ArrayList<>();
+    private final List<String> originalStylesheets = new ArrayList<>();
 
     @FXML
     public void switchToLightTheme() {
@@ -989,7 +962,7 @@ public class GuiController {
 
         clearStyles(anchorPane);
         anchorPane.getStylesheets().clear();
-        anchorPane.getStylesheets().add(getClass().getResource("/com/cgvsu/fxml/lightTheme.css").toExternalForm());
+        anchorPane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/cgvsu/fxml/lightTheme.css")).toExternalForm());
     }
 
     private void clearStyles(Parent parent) {
@@ -1011,7 +984,7 @@ public class GuiController {
         isDarkTheme = true;
         clearStyles(anchorPane);
         anchorPane.getStylesheets().clear();
-        anchorPane.getStylesheets().add(getClass().getResource("/com/cgvsu/fxml/DarkTheme.css").toExternalForm());
+        anchorPane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/cgvsu/fxml/DarkTheme.css")).toExternalForm());
     }
     /*   <----------------------------БЛОК ТЕМЫ----------------------->   */
 
@@ -1075,9 +1048,9 @@ public class GuiController {
 
         Scene scene = new Scene(layout, 350, 600);
         if (isDarkTheme) {
-            scene.getStylesheets().add(getClass().getResource("/com/cgvsu/fxml/DarkTheme.css").toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/cgvsu/fxml/DarkTheme.css")).toExternalForm());
         } else {
-            scene.getStylesheets().add(getClass().getResource("/com/cgvsu/fxml/lightTheme.css").toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/cgvsu/fxml/lightTheme.css")).toExternalForm());
         }
         editStage.setScene(scene);
 
@@ -1109,7 +1082,7 @@ public class GuiController {
     }
 
     @FXML
-    private void onAddCameraClick(ActionEvent event) {
+    private void onAddCameraClick() {
         try {
             float x = Float.parseFloat(xCoordTextField.getText());
             float y = Float.parseFloat(yCoordTextField.getText());
@@ -1128,12 +1101,12 @@ public class GuiController {
 
     /*   <----------------------------БЛОК ТЕКСТУРЫ----------------------->   */
     @FXML
-    private void onAddTextureClick(ActionEvent event) {
+    private void onAddTextureClick() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files (*.png, *.jpg)", "*.png", "*.jpg"));
         fileChooser.setTitle("Load Texture");
 
-        File file = fileChooser.showOpenDialog((Stage) textureComboBox.getScene().getWindow());
+        File file = fileChooser.showOpenDialog(textureComboBox.getScene().getWindow());
         if (file == null) {
             return;
         }
@@ -1220,12 +1193,12 @@ public class GuiController {
 
     /*   <----------------------------БЛОК МОДЕЛИ----------------------->   */
     @FXML
-    private void onAddModelClick(ActionEvent event) {
+    private void onAddModelClick() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
         fileChooser.setTitle("Load Model");
 
-        File file = fileChooser.showOpenDialog((Stage) modelListView.getScene().getWindow());
+        File file = fileChooser.showOpenDialog(modelListView.getScene().getWindow());
         Model model = SceneTools.addModel(file);
 
         if (model != null) {
@@ -1244,7 +1217,7 @@ public class GuiController {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
         fileChooser.setTitle("Save Model");
 
-        File file = fileChooser.showSaveDialog((Stage) canvas.getScene().getWindow());
+        File file = fileChooser.showSaveDialog(canvas.getScene().getWindow());
         if (file == null) {
             return;
         }
@@ -1259,32 +1232,32 @@ public class GuiController {
 /*   <----------------------------БЛОК МОДЕЛИ----------------------->   */
 
     @FXML
-    public void handleCameraForward(ActionEvent actionEvent) {
+    public void handleCameraForward() {
         mainCamera.movePosition(new Vector3f(0, 0, -TRANSLATION));
     }
 
     @FXML
-    public void handleCameraBackward(ActionEvent actionEvent) {
+    public void handleCameraBackward() {
         mainCamera.movePosition(new Vector3f(0, 0, TRANSLATION));
     }
 
     @FXML
-    public void handleCameraLeft(ActionEvent actionEvent) {
+    public void handleCameraLeft() {
         mainCamera.movePosition(new Vector3f(TRANSLATION, 0, 0));
     }
 
     @FXML
-    public void handleCameraRight(ActionEvent actionEvent) {
+    public void handleCameraRight() {
         mainCamera.movePosition(new Vector3f(-TRANSLATION, 0, 0));
     }
 
     @FXML
-    public void handleCameraUp(ActionEvent actionEvent) {
+    public void handleCameraUp() {
         mainCamera.movePosition(new Vector3f(0, TRANSLATION, 0));
     }
 
     @FXML
-    public void handleCameraDown(ActionEvent actionEvent) {
+    public void handleCameraDown() {
         mainCamera.movePosition(new Vector3f(0, -TRANSLATION, 0));
     }
 }
