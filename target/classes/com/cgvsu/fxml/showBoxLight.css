@@ -1,0 +1,37 @@
+.error-window {
+    -fx-background-color:  #d3d3d3;
+    -fx-border-color: #d3d3d3;
+}
+
+.error-textarea {
+    -fx-background-color: #d3d3d3;
+    -fx-text-fill: black;
+    -fx-font-size: 14px;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-control-inner-background: #d3d3d3;
+    -fx-border-color: #d3d3d3;
+    -fx-overflow: transparent;
+    -fx-resize: transparent;
+}
+
+.error-text {
+    -fx-fill: black;
+    -fx-font-size: 16px;
+}
+
+.error-textarea:focused {
+    -fx-text-fill: black;
+}
+
+.close-button {
+    -fx-background-color: gray;
+    -fx-text-fill: black;
+    -fx-font-size: 16px;
+    -fx-padding: 5px 15px;
+}
+
+.close-button:hover {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+}

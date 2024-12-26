@@ -60,6 +60,13 @@ public class GuiController {
     private TextField zCoordTextField;
 
     @FXML
+    private TextField xCoordTextFieldLigtning;
+    @FXML
+    private TextField yCoordTextFieldLigtning;
+    @FXML
+    private TextField zCoordTextFieldLigtning;
+
+    @FXML
     private TextField xScaleCoords;
     @FXML
     private TextField yScaleCoords;
@@ -114,6 +121,9 @@ public class GuiController {
 
     @FXML
     private ListView<Camera> camerasListView;
+
+    @FXML
+    private ListView<LightSource> lightningListView;
 
     @FXML
     private RadioButton textureRadioButton;
@@ -310,6 +320,69 @@ public class GuiController {
             return cell;
         });
 
+        lightSources = FXCollections.observableArrayList();
+        lightningListView.setItems((ObservableList<LightSource>) lightSources);
+
+        lightningListView.setCellFactory(e -> {
+            ListCell<LightSource> cell = new ListCell<>() {
+                @Override
+                protected void updateItem(LightSource lightSource, boolean empty) {
+                    super.updateItem(lightSource, empty);
+                    if (empty || lightSource == null) {
+                        setText(null);
+                        setContextMenu(null);
+                    } else {
+                        setText("Light Source (" + lightSource.getPosition().getX() + ", " + lightSource.getPosition().getY() + ", " + lightSource.getPosition().getZ() + ")");
+
+                        ContextMenu contextMenu = new ContextMenu();
+
+                        MenuItem editItem = new MenuItem("Edit");
+                        editItem.setOnAction(e -> {
+                            if (selectedCamera != null) {
+//                                openEditDialog(lightSource, isDarkTheme);
+                            } else {
+                                showMessage("Сначала выберите источник света (ЛКМ) перед редактированием.");
+                            }
+                        });
+
+                        MenuItem deleteItem = new MenuItem("Delete");
+                        deleteItem.setOnAction(e -> SceneTools.removeLightSource(lightSource));
+
+                        if (isDarkTheme) {
+                            contextMenu.setStyle("");
+                            editItem.setStyle("");
+                            deleteItem.setStyle("");
+                            contextMenu.setStyle("");
+                            contextMenu.setStyle("-fx-background-color: #2f2f2f; -fx-text-fill: white; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;");
+
+                            editItem.setStyle("-fx-text-fill: white; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;");
+                            deleteItem.setStyle("-fx-text-fill: white; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;");
+                        }
+                        else {
+                            contextMenu.setStyle("");
+                            editItem.setStyle("");
+                            deleteItem.setStyle("");
+                            contextMenu.setStyle("-fx-background-color: white; -fx-text-fill: black;");
+                            editItem.setStyle("-fx-background-color: #c0c0c0; -fx-text-fill: black;");
+                            deleteItem.setStyle("-fx-background-color: #c0c0c0; -fx-text-fill: black;");
+                        }
+
+                        contextMenu.getItems().addAll(editItem, deleteItem);
+                        setContextMenu(contextMenu);
+                    }
+                }
+            };
+
+            cell.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY && !cell.isEmpty()) {
+                    selectedLightSource = cell.getItem();
+                    System.out.println("Выбрана камера: " + selectedLightSource.getPosition());
+                }
+            });
+
+            return cell;
+        });
+
         modelListView.setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(Model model, boolean empty) {
@@ -424,6 +497,7 @@ public class GuiController {
     }
 
 
+
     private void createNewWindowWithTitledPane(TitledPane selectedTitledPane) {
         if (openedTitledPanes.contains(selectedTitledPane)) {
             return;
@@ -435,6 +509,7 @@ public class GuiController {
         sideBox.getChildren().remove(selectedTitledPane);
         if (sideBox.getChildren().isEmpty()) {
             slideOutSideBoxScrollPane();
+//            objectBorderPane.setMinWidth(canvas.getWidth());
         }
         HBox container = new HBox();
         Button returnButton = new Button("Back");
@@ -466,6 +541,7 @@ public class GuiController {
             }
             if (!sideBox.getChildren().isEmpty()) {
                 slideInSideBoxScrollPane();
+//                objectBorderPane.setMinWidth(Region.USE_COMPUTED_SIZE);
             }
 
             selectedTitledPane.setVisible(true);
@@ -495,7 +571,9 @@ public class GuiController {
             }
             if (!sideBox.getChildren().isEmpty()) {
                 slideInSideBoxScrollPane();
+//                objectBorderPane.setMinWidth(Region.USE_COMPUTED_SIZE);
             }
+
 
             selectedTitledPane.setVisible(true);
 
@@ -819,7 +897,11 @@ public class GuiController {
         StackPane.setAlignment(closeButton, Pos.BOTTOM_CENTER);
 
         Scene scene = new Scene(root, 800, 100);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/cgvsu/fxml/showBox.css")).toExternalForm());
+        if (isDarkTheme){
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/cgvsu/fxml/showBox.css")).toExternalForm());
+        } else {
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/cgvsu/fxml/showBoxLight.css")).toExternalForm());
+        }
         errorStage.setScene(scene);
 
         errorStage.show();
@@ -883,82 +965,6 @@ public class GuiController {
     }
     /*   <----------------------------БЛОК TRS----------------------->   */
 
-
-    /*   <----------------------------БЛОК СВЕТА----------------------->   */
-    @FXML
-    private void onAddLightSourceClick() {
-        LightSource newLight = SceneTools.createLightSource(0, 10, 0);
-        lightSources.add(newLight);
-
-        HBox lightRow = createLightSourceRow("Light " + lightSources.size(), newLight);
-        lightSourcesVBox.getChildren().add(lightRow);
-    }
-
-
-    private HBox createLightSourceRow(String lightName, LightSource lightSource) {
-        HBox lightRow = new HBox(15);
-        lightRow.setAlignment(Pos.CENTER_LEFT);
-
-        Label lightLabel = new Label(lightName);
-        lightLabel.setStyle("-fx-text-fill: white;");
-
-        HBox buttonBox = new HBox(10);
-        buttonBox.setAlignment(Pos.CENTER_RIGHT);
-        HBox.setHgrow(buttonBox, Priority.ALWAYS);
-
-        Button selectButton = new Button("Select");
-        selectButton.setOnAction(e -> {
-            if (previousLightSourceSelectButton != null) {
-                previousLightSourceSelectButton.setStyle("");
-            }
-            if (selectedLightSource == lightSource) {
-                selectedLightSource = null;
-                selectButton.setStyle("");
-                previousLightSourceSelectButton = null;
-            } else {
-                selectedLightSource = lightSource;
-                updateSelectedLightSource(selectedLightSource, true);
-                selectButton.setStyle("-fx-background-color: #46463c; -fx-text-fill: #1f1f1f; ");
-                previousLightSourceSelectButton = selectButton;
-                System.out.println("Выбран источник света: " + lightName);
-            }
-        });
-
-        Button deleteButton = new Button("Delete");
-        deleteButton.setOnAction(e -> {
-            lightSources.remove(lightSource);
-            lightSourcesVBox.getChildren().remove(lightRow);
-            if (selectedLightSource == lightSource) {
-                selectedLightSource = null;
-            }
-            updateSelectedLightSource(selectedLightSource, selectedLightSource != null);
-            System.out.println("Вы удалили источник света: " + lightName);
-        });
-
-        buttonBox.getChildren().addAll(selectButton, deleteButton);
-
-        lightRow.getChildren().addAll(lightLabel, buttonBox);
-
-        return lightRow;
-    }
-
-    private void updateSelectedLightSource(LightSource lightSource, boolean isSelected) {
-        for (int i = 0; i < lightSourcesVBox.getChildren().size(); i++) {
-            HBox lightRow = (HBox) lightSourcesVBox.getChildren().get(i);
-            LightSource rowLightSource = lightSources.get(i);
-
-            if (rowLightSource == lightSource) {
-                if (isSelected) {
-                    lightRow.setStyle("-fx-background-color: #1f1f1f;");
-                } else {
-                    lightRow.setStyle("");
-                }
-            }
-        }
-    }
-    /*   <----------------------------БЛОК СВЕТА----------------------->   */
-
-
     /*   <----------------------------БЛОК ТЕМЫ----------------------->   */
     private final List<String> originalStylesheets = new ArrayList<>();
 
@@ -998,6 +1004,45 @@ public class GuiController {
         updateVertexList();
     }
     /*   <----------------------------БЛОК ТЕМЫ----------------------->   */
+
+    /*   <----------------------------БЛОК СВЕТА----------------------->   */
+
+    @FXML
+    private ColorPicker colorPickerLightning;
+
+    @FXML
+    private void onAddLightSourceClick() {
+        try {
+            float x = Float.parseFloat(xCoordTextFieldLigtning.getText());
+            float y = Float.parseFloat(yCoordTextFieldLigtning.getText());
+            float z = Float.parseFloat(zCoordTextFieldLigtning.getText());
+//            Color color = colorPickerLightning.getValue();
+
+            LightSource newLightSource = SceneTools.createLightSource(x, y, z);
+
+            lightningListView.getItems().add(newLightSource);
+            lightningListView.getSelectionModel().select(newLightSource);
+        } catch (NumberFormatException e) {
+            showMessage("Убедитесь, что параметры для координат источника света корректны");
+        }
+    }
+
+    private void updateSelectedLightSource(LightSource lightSource, boolean isSelected) {
+        for (int i = 0; i < lightSourcesVBox.getChildren().size(); i++) {
+            HBox lightRow = (HBox) lightSourcesVBox.getChildren().get(i);
+            LightSource rowLightSource = lightSources.get(i);
+
+            if (rowLightSource == lightSource) {
+                if (isSelected) {
+                    lightRow.setStyle("-fx-background-color: #1f1f1f;");
+                } else {
+                    lightRow.setStyle("");
+                }
+            }
+        }
+    }
+    /*   <----------------------------БЛОК СВЕТА----------------------->   */
+
 
     /*   <----------------------------БЛОК КАМЕРЫ----------------------->   */
 

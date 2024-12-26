@@ -73,6 +73,16 @@ public class SceneTools {
     public static LightSource createLightSource(float x, float y, float z) {
         return new LightSource("Light", new com.cgvsu.math.Vector3f(x, y, z));
     }
+
+    public static void removeLightSource(LightSource lightSource) {
+        if (lightSource == null) return;
+
+        lightSources.remove(lightSource);
+        if (selectedLightSource == lightSource) {
+            selectedLightSource = null;
+        }
+        System.out.println("Удален источник света: " + lightSource.getPosition());
+    }
     /*   <----------------------------БЛОК СВЕТА----------------------->   */
 
 

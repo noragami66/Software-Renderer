@@ -111,7 +111,8 @@
                                                       <stylesheets>
                                                          <URL value="@listView.css" />
                                                          <URL value="@DarkTheme.css" />
-                                                      </stylesheets></ListView>
+                                                      </stylesheets>
+                                                   </ListView>
                                                 </children>
                                              </VBox>
                                           </children>
@@ -157,33 +158,37 @@
                                  <Font size="19.0" />
                               </font>
                            </TitledPane>
-                           <TitledPane fx:id="lightningTitledPane" animated="false" expanded="false" maxHeight="170.0" maxWidth="373.0" onDragDetected="#setSelectionLightningPane" prefWidth="373.0" stylesheets="@titledPane.css" text="Lightning" textFill="#46463c">
+                           <TitledPane fx:id="lightningTitledPane" animated="false" expanded="true" maxHeight="200.0" maxWidth="373.0" onDragDetected="#setSelectionLightningPane" prefWidth="373.0" stylesheets="@titledPane.css" text="Lightning" textFill="#46463c">
                               <content>
-                                 <AnchorPane minHeight="-Infinity" minWidth="0.0" prefHeight="170.0" prefWidth="347.0">
+                                 <AnchorPane minHeight="-Infinity" minWidth="0.0" prefHeight="260.0" prefWidth="347.0">
                                     <children>
-                                       <ScrollPane hbarPolicy="NEVER" layoutX="-14.0" layoutY="-12.0" prefHeight="196.0" prefWidth="374.0" style="-fx-background-color: #1f1f1f;">
-                                          <stylesheets>
-                                             <URL value="@modelBox.css" />
-                                             <URL value="@scrollpane.css" />
-                                          </stylesheets>
-                                          <content>
-                                             <VBox prefHeight="191.0" prefWidth="370.0">
+                                       <VBox layoutX="-12.0" layoutY="-20.0" prefHeight="291.0" prefWidth="375.0">
+                                          <children>
+                                             <Button alignment="TOP_LEFT" mnemonicParsing="false" onAction="#onAddLightSourceClick" prefHeight="61.0" prefWidth="390.0" style="-fx-background-color: #1f1f1f; -fx-border-width: 0;" text="Add lightning" textFill="#46463c" underline="true">
+                                                <font>
+                                                   <Font size="18.0" />
+                                                </font>
+                                             </Button>
+                                             <VBox fx:id="lightningCoordinatesVBox" prefHeight="266.0" prefWidth="421.0" style="-fx-background-color: #1f1f1f; -fx-padding: 10; -fx-spacing: 10;">
                                                 <children>
-                                                   <Button alignment="TOP_LEFT" mnemonicParsing="false" onAction="#onAddLightSourceClick" prefHeight="41.0" prefWidth="372.0" style="-fx-background-color: #1f1f1f; -fx-border-width: 0;" text="Add lighting source" textFill="#46463c" underline="true">
-                                                      <font>
-                                                         <Font size="18.0" />
-                                                      </font>
-                                                   </Button>
-                                                   <VBox fx:id="lightSourcesVBox" nodeOrientation="LEFT_TO_RIGHT" prefHeight="195.0" prefWidth="370.0" style="-fx-background-color: #1f1f1f; -fx-padding: 10; -fx-spacing: 10;">
+                                                   <HBox prefWidth="367.0" spacing="10" style="-fx-background-color: #1f1f1f;">
+                                                      <children>
+                                                         <TextField promptText="X" style="-fx-background-color: #2f2f2f; -fx-text-fill: #46463c;" fx:id="xCoordTextFieldLigtning" />
+                                                         <TextField fx:id="yCoordTextFieldLigtning" promptText="Y" style="-fx-background-color: #2f2f2f; -fx-text-fill: #46463c;" />
+                                                         <TextField fx:id="zCoordTextFieldLigtning" promptText="Z" style="-fx-background-color: #2f2f2f; -fx-text-fill: #46463c;" />
+                                                         <ColorPicker fx:id="colorPickerLightning" stylesheets="@DarkTheme.css" />
+                                                      </children>
+                                                   </HBox>
+                                                   <ListView fx:id="lightningListView" prefHeight="222.0" prefWidth="355.0">
                                                       <stylesheets>
-                                                         <URL value="@scrollpane.css" />
-                                                         <URL value="@modelBox.css" />
+                                                         <URL value="@listView.css" />
+                                                         <URL value="@DarkTheme.css" />
                                                       </stylesheets>
-                                                   </VBox>
+                                                   </ListView>
                                                 </children>
                                              </VBox>
-                                          </content>
-                                       </ScrollPane>
+                                          </children>
+                                       </VBox>
                                     </children>
                                  </AnchorPane>
                               </content>
@@ -268,7 +273,7 @@
                </Pane>
             </top>
             <center>
-                <BorderPane fx:id="objectBorderPane" onDragDropped="#handleDropObj" onDragEntered="#handleDragEnteredObj" onDragExited="#handleDragExitedObj" onDragOver="#handleDragOverObj" prefHeight="778.0" prefWidth="1225.0" />
+                <BorderPane fx:id="objectBorderPane" onDragDropped="#handleDropObj" onDragEntered="#handleDragEnteredObj" onDragExited="#handleDragExitedObj" onDragOver="#handleDragOverObj" prefHeight="793.0" prefWidth="1225.0" />
             </center>
             <bottom>
                <Pane fx:id="bottomPane" prefHeight="42.0" prefWidth="1227.0" style="-fx-background-color: #1f1f1f; -fx-border-color: #1D1D1D; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 15, 0, 0, 5);" BorderPane.alignment="CENTER">
