@@ -375,7 +375,6 @@ public class GuiController {
         });
     }
     /*   <----------------------------БЛОК ВЫНОСА----------------------->   */
-
     public void setSelectionEditingPane() {
             selectedTitledPane = editingTitledPane;
             System.out.println("Selected TitledPane: " + editingTitledPane.getText());
@@ -418,6 +417,23 @@ public class GuiController {
     private ScrollPane sideBoxScrollPane;
     private Set<TitledPane> openedTitledPanes = new HashSet<>();
 
+    private void slideOutSideBoxScrollPane() {
+        TranslateTransition slideOut = new TranslateTransition(Duration.millis(250), sideBoxScrollPane);
+        slideOut.setToX(sideBoxScrollPane.getWidth());
+        slideOut.setOnFinished(event -> {
+            sideBoxScrollPane.setVisible(false);
+        });
+        slideOut.play();
+    }
+
+    private void slideInSideBoxScrollPane() {
+        sideBoxScrollPane.setVisible(true);
+        TranslateTransition slideIn = new TranslateTransition(Duration.millis(250), sideBoxScrollPane);
+        slideIn.setToX(0);
+        slideIn.play();
+    }
+
+
     private void createNewWindowWithTitledPane(TitledPane selectedTitledPane, boolean isDarkTheme) {
         if (openedTitledPanes.contains(selectedTitledPane)) {
             return;
@@ -428,7 +444,7 @@ public class GuiController {
         int originalIndex = sideBox.getChildren().indexOf(selectedTitledPane);
         sideBox.getChildren().remove(selectedTitledPane);
         if (sideBox.getChildren().isEmpty()) {
-            sideBoxScrollPane.setVisible(false);
+            slideOutSideBoxScrollPane();
         }
         HBox container = new HBox();
         Button returnButton = new Button("Back");
@@ -454,7 +470,7 @@ public class GuiController {
                 sideBox.getChildren().add(selectedTitledPane);
             }
             if (!sideBox.getChildren().isEmpty()) {
-                sideBoxScrollPane.setVisible(true);
+                slideInSideBoxScrollPane();
             }
 
             selectedTitledPane.setVisible(true);
@@ -483,7 +499,7 @@ public class GuiController {
                 sideBox.getChildren().add(selectedTitledPane);
             }
             if (!sideBox.getChildren().isEmpty()) {
-                sideBoxScrollPane.setVisible(true);
+                slideInSideBoxScrollPane();
             }
 
             selectedTitledPane.setVisible(true);
