@@ -71,7 +71,7 @@ public class SceneTools {
 
     /*   <----------------------------БЛОК СВЕТА----------------------->   */
     public static LightSource createLightSource(float x, float y, float z) {
-        return new LightSource("Light", new com.cgvsu.math.Vector3f(x, y, z));
+        return new LightSource("Light", new com.cgvsu.math.vector.Vector3f(x, y, z));
     }
 
     public static void removeLightSource(LightSource lightSource) {

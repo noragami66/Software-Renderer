@@ -1,6 +1,6 @@
 package com.cgvsu.render_engine;
 
-import com.cgvsu.math.Vector3f;
+import com.cgvsu.math.vector.Vector3f;
 import com.cgvsu.model.Model;
 import com.cgvsu.model.Polygon;
 import javafx.scene.canvas.GraphicsContext;

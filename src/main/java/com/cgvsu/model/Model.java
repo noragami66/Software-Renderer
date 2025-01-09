@@ -1,7 +1,7 @@
 package com.cgvsu.model;
 
-import com.cgvsu.math.Vector2f;
-import com.cgvsu.math.Vector3f;
+import com.cgvsu.math.vector.Vector2f;
+import com.cgvsu.math.vector.Vector3f;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;

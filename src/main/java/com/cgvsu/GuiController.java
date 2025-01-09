@@ -740,7 +740,7 @@ public class GuiController {
 
         if (selectedModel != null) {
             for (int i = 0; i < selectedModel.vertices.size(); i++) {
-                com.cgvsu.math.Vector3f vertex = selectedModel.vertices.get(i);
+                com.cgvsu.math.vector.Vector3f vertex = selectedModel.vertices.get(i);
                 vertexListView.getItems().add("Vertex " + i + ": (" + vertex.getX() + ", " + vertex.getY() + ", " + vertex.getZ() + ")");
             }
         }

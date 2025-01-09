@@ -1,11 +1,13 @@
 package com.cgvsu.render_engine;
 
 
+import com.cgvsu.math.vector.Vector3f;
+
 public class LightSource {
     private final String name;
-    private final com.cgvsu.math.Vector3f position;
+    private final Vector3f position;
 
-    public LightSource(String name, com.cgvsu.math.Vector3f position) {
+    public LightSource(String name, Vector3f position) {
         this.name = name;
         this.position = position;
     }
@@ -14,7 +16,7 @@ public class LightSource {
         return name;
     }
 
-    public com.cgvsu.math.Vector3f getPosition() {
+    public Vector3f getPosition() {
         return position;
     }
 }
